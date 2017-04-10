@@ -5,38 +5,52 @@ package editortrees;
 // belong to two different trees.
 
 public class Node {
-	
+
 	enum Code {
 		SAME, LEFT, RIGHT;
 		// Used in the displayer and debug string
 		public String toString() {
 			switch (this) {
-				case LEFT:
-					return "/";
-				case SAME:
-					return "=";
-				case RIGHT:
-					return "\\";
-				default:
-					throw new IllegalStateException();
+			case LEFT:
+				return "/";
+			case SAME:
+				return "=";
+			case RIGHT:
+				return "\\";
+			default:
+				throw new IllegalStateException();
 			}
 		}
 	}
-	
-	// The fields would normally be private, but for the purposes of this class, 
-	// we want to be able to test the results of the algorithms in addition to the
+
+	// The fields would normally be private, but for the purposes of this class,
+	// we want to be able to test the results of the algorithms in addition to
+	// the
 	// "publicly visible" effects
-	
-	char element;            
+
+	char element;
 	Node left, right; // subtrees
-	int rank;         // inorder position of this node within its own subtree.
-	Code balance; 
-	// Node parent;  // You may want this field.
+	int rank; // inorder position of this node within its own subtree.
+	Code balance;
+	// Node parent; // You may want this field.
 	// Feel free to add other fields that you find useful
 
 	// You will probably want to add several other methods
 
-	// For the following methods, you should fill in the details so that they work correctly
+	// For the following methods, you should fill in the details so that they
+	// work correctly
+	public Node() {
+		this.element = '\0';
+		this.left = null;
+		this.right = null;
+	}
+
+	public Node(char ch) {
+		this.element = ch;
+		this.left = null;
+		this.right = null;
+	}
+
 	public int height() {
 		return -2;
 	}
