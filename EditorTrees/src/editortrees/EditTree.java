@@ -1,6 +1,7 @@
 package editortrees;
 
 import java.util.ArrayList;
+import java.util.Stack;
 
 // A height-balanced binary tree with rank that could be the basis for a text editor.
 
@@ -68,28 +69,30 @@ public class EditTree {
 		if (this.root == null) {
 			return result;
 		}
-		ArrayList<Node> a = toInorderList(this.root);
-		for (Node ch : a) {
-			result += ch.element;
+		ArrayList<Character> a = toInorderList(this.root);
+		for (Character ch : a) {
+			result += ch;
 		}
 		return result;
 	}
 
-	private ArrayList<Node> toInorderList(Node node) {
-
-		ArrayList<Node> treelist = new ArrayList<Node>();
-		if (node.left != null) {
-			toInorderList(node.left);
-			treelist.add(node.left);
+	private ArrayList<Character> toInorderList(Node node) {
+		Stack<Node> stack = new Stack<Node>();
+		ArrayList<Character> result = new ArrayList<Character>();
+		Node curt = root;
+		while (curt != null || !stack.empty()) {
+			while (curt != null) {
+				stack.add(curt);
+				curt = curt.left;
+			}
+			curt = stack.peek();
+			stack.pop();
+			result.add(curt.element);
+			curt = curt.right;
 		}
-		treelist.add(this.root);
-		if (node.right != null) {
-			toInorderList(node.right);
-			treelist.add(node.right);
-		}
-		return treelist;
-
+		return result;
 	}
+	
 
 	/**
 	 * MILESTONE 1 This one asks for more info from each node. You can write it
@@ -136,7 +139,9 @@ public class EditTree {
 			t.left = add(ch, t.left);
 		} else if (ch > t.element) {
 			t.right = add(ch, t.right);
-		} 
+		} else {
+			;
+		}
 		return t;
 	}
 
