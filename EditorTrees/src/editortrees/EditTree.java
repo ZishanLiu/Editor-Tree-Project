@@ -12,7 +12,7 @@ public class EditTree {
 	 * MILESTONE 1 Construct an empty tree
 	 */
 	public EditTree() {
-		 
+
 	}
 
 	/**
@@ -33,7 +33,7 @@ public class EditTree {
 	 * @param e
 	 */
 	public EditTree(EditTree e) {
-		
+
 	}
 
 	/**
@@ -63,31 +63,31 @@ public class EditTree {
 	 */
 	@Override
 	public String toString() {
-		
+
 		String result = "";
-	    if(this.root == null){
-	        return result;
-	    }
-	    ArrayList<Node> a = toInorderList(this.root);
-	    for(Node ch : a){
-	    	result += ch.element;
-	    }
+		if (this.root == null) {
+			return result;
+		}
+		ArrayList<Node> a = toInorderList(this.root);
+		for (Node ch : a) {
+			result += ch.element;
+		}
 		return result;
 	}
 
 	private ArrayList<Node> toInorderList(Node node) {
-		
+
 		ArrayList<Node> treelist = new ArrayList<Node>();
-	    if(node.left !=null){
-	        toInorderList(node.left);
-	        treelist.add(node.left);    
-	    }
-	    treelist.add(this.root);
-	    if(node.right != null){
-	        toInorderList(node.right);
-	        treelist.add(node.right);
-	    }
-	    return treelist;
+		if (node.left != null) {
+			toInorderList(node.left);
+			treelist.add(node.left);
+		}
+		treelist.add(this.root);
+		if (node.right != null) {
+			toInorderList(node.right);
+			treelist.add(node.right);
+		}
+		return treelist;
 
 	}
 
@@ -125,15 +125,19 @@ public class EditTree {
 		// you!
 		// 2. Unit tests are cumulative, and many things are based on add(), so
 		// make sure that you get this one correct.
-		this.root = add(ch,this.root);
-		
+		this.root = add(ch, this.root);
+
 	}
 
 	private Node add(char ch, Node t) {
-		if(t == null){
+		if (t == null) {
 			return new Node(ch);
-		}
-	    return t;  
+		} else if (ch < t.element) {
+			t.left = add(ch, t.left);
+		} else if (ch > t.element) {
+			t.right = add(ch, t.right);
+		} 
+		return t;
 	}
 
 	/**
