@@ -52,7 +52,13 @@ public class Node {
 	}
 
 	public int height() {
-		return -2;
+		int left = this.left.height();
+		int right = this.right.height();
+
+		if (left > right) {
+			return left + 1;
+		}
+		return right + 1;
 	}
 
 	public int size() {
