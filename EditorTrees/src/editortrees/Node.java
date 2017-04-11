@@ -31,7 +31,8 @@ public class Node {
 	char element;
 	Node left, right; // subtrees
 	int rank; // inorder position of this node within its own subtree.
-	Code balance;
+	Code balance; 
+	Node parent;
 	// Node parent; // You may want this field.
 	// Feel free to add other fields that you find useful
 

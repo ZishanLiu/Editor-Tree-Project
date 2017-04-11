@@ -139,9 +139,7 @@ public class EditTree {
 			t.left = add(ch, t.left);
 		} else if (ch > t.element) {
 			t.right = add(ch, t.right);
-		} else {
-			;
-		}
+		} 
 		return t;
 	}
 
