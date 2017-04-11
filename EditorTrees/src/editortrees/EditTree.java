@@ -311,4 +311,36 @@ public class EditTree {
 	public Node getRoot() {
 		return this.root;
 	}
+
+	public Node singleLeft(Node n) {
+		Node n2 = n.left;
+		n.left = n2.right;
+		n2.right = n;
+		return n2;
+	}
+
+	public Node singleRight(Node n) {
+		Node n2 = n.right;
+		n.right = n2.left;
+		n2.left = n;
+		return n2;
+	}
+	
+	 public Node doubleLeft(Node n){        
+	        try{  
+	            n.left = singleRight(n.left);  
+	        }catch(NullPointerException e){    
+	            throw e;  
+	        }  
+	        return singleLeft(n);       
+	    }
+	 
+	 public Node doubleRight(Node n){  
+	        try{  
+	            n.right = singleLeft(n.right);  
+	        }catch(NullPointerException e){    
+	            throw e;  
+	        }         
+	        return singleRight(n);  
+	    }  
 }
