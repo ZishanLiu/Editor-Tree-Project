@@ -189,6 +189,9 @@ public class EditTree {
 	 *             id pos is negative or too large for this tree
 	 */
 	public void add(char ch, int pos) throws IndexOutOfBoundsException {
+		if (pos < 0 || pos > this.size()) {
+			throw new IndexOutOfBoundsException();
+		}
 		if (root == null) {
 			root = new Node(ch);
 		} else {
@@ -197,9 +200,6 @@ public class EditTree {
 	}
 
 	public void add(char ch, int pos, Node current) throws IndexOutOfBoundsException {
-		if (pos < 0 || pos > this.size()) {
-			throw new IndexOutOfBoundsException();
-		}
 
 		if (pos <= current.rank) {
 			current.rank++;

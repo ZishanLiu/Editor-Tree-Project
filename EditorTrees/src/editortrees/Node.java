@@ -5,7 +5,7 @@ package editortrees;
 // belong to two different trees.
 
 public class Node {
-	
+
 	enum Code {
 		SAME, LEFT, RIGHT;
 		// Used in the displayer and debug string
@@ -56,13 +56,20 @@ public class Node {
 	}
 
 	public int height() {
-		int left = this.left.height();
-		int right = this.right.height();
-
-		if (left > right) {
-			return left + 1;
+		if (left == null && right == null) {
+			return 0;
+		} else if (left == null) {
+			return right.height();
+		} else if (right == null) {
+			return left.height();
+		} else {
+			int left = this.left.height();
+			int right = this.right.height();
+			if (left > right) {
+				return left + 1;
+			}
+			return right + 1;
 		}
-		return right + 1;
 	}
 
 	public int size() {
