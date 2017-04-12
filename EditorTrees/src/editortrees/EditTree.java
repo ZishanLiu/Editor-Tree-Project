@@ -111,7 +111,40 @@ public class EditTree {
 	 *         pre-order traversal of the tree.
 	 */
 	public String toDebugString() {
-		return null;
+		String result = "";
+		if (this.root == null) {
+			return "[" + result + "]";
+		}
+		ArrayList<Node> a = toPreorderList(this.root);
+		for (Node ch : a) {
+			result += ch.element;
+			result += ch.rank + ch.balance.toString() + "," + " ";
+		}
+		return "[" + result.substring(0, result.length() - 2) + "]";
+	}
+
+	private ArrayList<Node> toPreorderList(Node root) {
+		ArrayList<Node> returnList = new ArrayList<Node>();
+
+		if (root == null) {
+			return returnList;
+		}
+		Stack<Node> stack = new Stack<Node>();
+		stack.push(root);
+
+		while (!stack.empty()) {
+			Node n = stack.pop();
+			returnList.add(n);
+
+			if (n.right != null) {
+				stack.push(n.right);
+			}
+			if (n.left != null) {
+				stack.push(n.left);
+			}
+
+		}
+		return returnList;
 	}
 
 	/**
@@ -169,12 +202,13 @@ public class EditTree {
 		}
 
 		if (pos <= current.rank) {
+			current.rank++;
 			if (current.left == null) {
 				Node a = new Node(ch);
 				current.left = a;
 				current.left.parent = current;
-
-				while (current != this.root) {
+				
+				while (current!=null) {
 					if (current.balance.equals(Code.LEFT)) {
 						if (current.parent != null) {
 							current.parent.left = singleRight(current);
@@ -187,6 +221,9 @@ public class EditTree {
 						current.balance = Code.SAME;
 					}
 					current = current.parent;
+					if (current == this.root){
+						break;
+					}
 				}
 
 				return;
@@ -381,17 +418,27 @@ public class EditTree {
 
 	public Node singleLeft(Node parent) {
 		Node child = parent.right;
+
+		child.rank = child.rank + parent.rank + 1;
+
 		parent.right = child.left;
 		child.left = parent;
 		numberOfRotation++;
+
+		child.balance = Code.SAME;
+		parent.balance = Code.SAME;
 		return child;
 	}
 
 	public Node singleRight(Node parent) {
 		Node child = parent.left;
+
+		parent.rank = parent.rank - child.rank - 1;
 		parent.left = child.right;
 		child.right = parent;
 		numberOfRotation++;
+		child.balance = Code.SAME;
+		parent.balance = Code.SAME;
 		return child;
 	}
 
