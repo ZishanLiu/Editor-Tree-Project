@@ -13,7 +13,7 @@ public class EditTree {
 	 * MILESTONE 1 Construct an empty tree
 	 */
 	public EditTree() {
-
+		this.root = null;
 	}
 
 	/**
@@ -92,7 +92,6 @@ public class EditTree {
 		}
 		return result;
 	}
-	
 
 	/**
 	 * MILESTONE 1 This one asks for more info from each node. You can write it
@@ -139,7 +138,7 @@ public class EditTree {
 			t.left = add(ch, t.left);
 		} else if (ch > t.element) {
 			t.right = add(ch, t.right);
-		} 
+		}
 		return t;
 	}
 
@@ -154,7 +153,26 @@ public class EditTree {
 	 *             id pos is negative or too large for this tree
 	 */
 	public void add(char ch, int pos) throws IndexOutOfBoundsException {
+		add(ch, pos, this.root);
+	}
 
+	public void add(char ch, int pos, Node current) throws IndexOutOfBoundsException {
+		if (pos < 0 || pos > this.size()) {
+			throw new IndexOutOfBoundsException();
+		}
+
+		if (current == null) {
+			add(ch);
+			return;
+		}
+		if (pos <= current.rank) {
+			current = current.left;
+			add(ch, pos, current);
+		} else {
+			int rootRank = current.rank;
+			current = current.right;
+			add(ch, pos - rootRank - 1, current);
+		}
 	}
 
 	/**
@@ -166,6 +184,9 @@ public class EditTree {
 	 * @throws IndexOutOfBoundsException
 	 */
 	public char get(int pos) throws IndexOutOfBoundsException {
+		if (pos >= this.size() || pos < 0) {
+			throw new IndexOutOfBoundsException();
+		}
 		return '%';
 	}
 
@@ -175,10 +196,10 @@ public class EditTree {
 	 * @return the height of this tree
 	 */
 	public int height() {
-		if(this.root == null){
+		if (this.root == null) {
 			return -1;
 		}
-		return this.root.height(); 
+		return this.root.height();
 	}
 
 	/**
@@ -187,7 +208,10 @@ public class EditTree {
 	 * @return the number of nodes in this tree
 	 */
 	public int size() {
-		return -1; // replace by a real calculation.
+		if (this.root == null) {
+			return 0;
+		}
+		return this.root.size(); // replace by a real calculation.
 	}
 
 	/**
@@ -325,22 +349,22 @@ public class EditTree {
 		n2.left = n;
 		return n2;
 	}
-	
-	 public Node doubleLeft(Node n){        
-	        try{  
-	            n.left = singleRight(n.left);  
-	        }catch(NullPointerException e){    
-	            throw e;  
-	        }  
-	        return singleLeft(n);       
-	    }
-	 
-	 public Node doubleRight(Node n){  
-	        try{  
-	            n.right = singleLeft(n.right);  
-	        }catch(NullPointerException e){    
-	            throw e;  
-	        }         
-	        return singleRight(n);  
-	    }  
+
+	public Node doubleLeft(Node n) {
+		try {
+			n.left = singleRight(n.left);
+		} catch (NullPointerException e) {
+			throw e;
+		}
+		return singleLeft(n);
+	}
+
+	public Node doubleRight(Node n) {
+		try {
+			n.right = singleLeft(n.right);
+		} catch (NullPointerException e) {
+			throw e;
+		}
+		return singleRight(n);
+	}
 }
