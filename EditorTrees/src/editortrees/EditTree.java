@@ -79,16 +79,16 @@ public class EditTree {
 	private ArrayList<Character> toInorderList(Node node) {
 		Stack<Node> stack = new Stack<Node>();
 		ArrayList<Character> result = new ArrayList<Character>();
-		Node curt = root;
-		while (curt != null || !stack.empty()) {
-			while (curt != null) {
-				stack.add(curt);
-				curt = curt.left;
+		Node temp = root;
+		while (temp != null || !stack.empty()) {
+			while (temp != null) {
+				stack.add(temp);
+				temp = temp.left;
 			}
-			curt = stack.peek();
+			temp = stack.peek();
 			stack.pop();
-			result.add(curt.element);
-			curt = curt.right;
+			result.add(temp.element);
+			temp = temp.right;
 		}
 		return result;
 	}
@@ -153,6 +153,9 @@ public class EditTree {
 	 *             id pos is negative or too large for this tree
 	 */
 	public void add(char ch, int pos) throws IndexOutOfBoundsException {
+		if (root==null){
+			root=new Node(ch);
+		}
 		add(ch, pos, this.root);
 	}
 
@@ -161,14 +164,24 @@ public class EditTree {
 			throw new IndexOutOfBoundsException();
 		}
 
-		if (current == null) {
-			add(ch);
-			return;
-		}
 		if (pos <= current.rank) {
+			if(current.left == null){
+				Node a = new Node(ch);
+				current.left = a;
+				current.left.parent = current;
+				return;
+			}
+			current.left.parent = current;
 			current = current.left;
 			add(ch, pos, current);
 		} else {
+			if(current.right == null){
+				Node a = new Node(ch);
+				current.right = a;
+				current.right.parent = current;
+				return;
+			}
+			current.right.parent = current;
 			int rootRank = current.rank;
 			current = current.right;
 			add(ch, pos - rootRank - 1, current);

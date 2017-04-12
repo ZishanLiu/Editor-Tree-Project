@@ -5,7 +5,7 @@ package editortrees;
 // belong to two different trees.
 
 public class Node {
-
+	
 	enum Code {
 		SAME, LEFT, RIGHT;
 		// Used in the displayer and debug string
@@ -33,7 +33,6 @@ public class Node {
 	int rank; // inorder position of this node within its own subtree.
 	Code balance;
 	Node parent;
-	// Node parent; // You may want this field.
 	// Feel free to add other fields that you find useful
 
 	// You will probably want to add several other methods
@@ -117,12 +116,20 @@ public class Node {
 	}
 
 	public Code getCode() {
-		if (left.size() > right.size()) {
-			return Code.LEFT;
-		} else if (left.size() < right.size()) {
-			return Code.RIGHT;
-		} else {
+		if (left == null && right == null) {
 			return Code.SAME;
+		} else if (left == null) {
+			return Code.RIGHT;
+		} else if (right == null) {
+			return Code.LEFT;
+		} else {
+			if (left.size() > right.size()) {
+				return Code.LEFT;
+			} else if (left.size() < right.size()) {
+				return Code.RIGHT;
+			} else {
+				return Code.SAME;
+			}
 		}
 	}
 
