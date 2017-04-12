@@ -171,9 +171,27 @@ public class EditTree {
 		if (t == null) {
 			return new Node(ch);
 		} else if (ch < t.element) {
+
 			t.left = add(ch, t.left);
+			t.left.parent = t;
+			t.balance = Code.LEFT;
+
+			if (t.left != null) {
+				t.rank = t.left.size();
+			} else {
+				t.rank = 0;
+			}
+
 		} else if (ch > t.element) {
+
 			t.right = add(ch, t.right);
+			t.right.parent = t;
+			t.balance = Code.RIGHT;
+			if (t.left != null) {
+				t.rank = t.left.size();
+			} else {
+				t.rank = 0;
+			}
 		}
 		return t;
 	}
@@ -207,8 +225,8 @@ public class EditTree {
 				Node a = new Node(ch);
 				current.left = a;
 				current.left.parent = current;
-				
-				while (current!=null) {
+
+				while (current != null) {
 					if (current.balance.equals(Code.LEFT)) {
 						if (current.parent != null) {
 							current.parent.left = singleRight(current);
@@ -221,7 +239,7 @@ public class EditTree {
 						current.balance = Code.SAME;
 					}
 					current = current.parent;
-					if (current == this.root){
+					if (current == this.root) {
 						break;
 					}
 				}
