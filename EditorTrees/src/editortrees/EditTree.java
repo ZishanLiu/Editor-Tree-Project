@@ -3,11 +3,14 @@ package editortrees;
 import java.util.ArrayList;
 import java.util.Stack;
 
+import editortrees.Node.Code;
+
 // A height-balanced binary tree with rank that could be the basis for a text editor.
 
 public class EditTree {
 
 	private Node root;
+	private int numberOfRotation = 0;
 
 	/**
 	 * MILESTONE 1 Construct an empty tree
@@ -55,7 +58,7 @@ public class EditTree {
 	 * @return number of rotations since tree was created.
 	 */
 	public int totalRotationCount() {
-		return -1; // replace by a real calculation.
+		return numberOfRotation; // replace by a real calculation.
 	}
 
 	/**
@@ -153,10 +156,11 @@ public class EditTree {
 	 *             id pos is negative or too large for this tree
 	 */
 	public void add(char ch, int pos) throws IndexOutOfBoundsException {
-		if (root==null){
-			root=new Node(ch);
+		if (root == null) {
+			root = new Node(ch);
+		} else {
+			add(ch, pos, this.root);
 		}
-		add(ch, pos, this.root);
 	}
 
 	public void add(char ch, int pos, Node current) throws IndexOutOfBoundsException {
@@ -165,20 +169,46 @@ public class EditTree {
 		}
 
 		if (pos <= current.rank) {
-			if(current.left == null){
+			if (current.left == null) {
 				Node a = new Node(ch);
 				current.left = a;
 				current.left.parent = current;
+
+				while (current != this.root) {
+					if (current.balance.equals(Code.LEFT)) {
+						if (current.parent != null) {
+							current.parent.left = singleRight(current);
+						} else {
+							this.root = singleRight(current);
+						}
+					} else if (current.balance.equals(Code.SAME)) {
+						current.balance = Code.LEFT;
+					} else {
+						current.balance = Code.SAME;
+					}
+					current = current.parent;
+				}
+
 				return;
 			}
 			current.left.parent = current;
 			current = current.left;
 			add(ch, pos, current);
 		} else {
-			if(current.right == null){
+			if (current.right == null) {
 				Node a = new Node(ch);
 				current.right = a;
 				current.right.parent = current;
+				while (current != this.root) {
+					if (current.balance.equals(Code.LEFT)) {
+						current.parent.right = singleLeft(current);
+					} else if (current.balance.equals(Code.SAME)) {
+						current.balance = Code.LEFT;
+					} else {
+						current.balance = Code.SAME;
+					}
+					current = current.parent;
+				}
 				return;
 			}
 			current.right.parent = current;
@@ -349,18 +379,20 @@ public class EditTree {
 		return this.root;
 	}
 
-	public Node singleLeft(Node n) {
-		Node n2 = n.left;
-		n.left = n2.right;
-		n2.right = n;
-		return n2;
+	public Node singleLeft(Node parent) {
+		Node child = parent.right;
+		parent.right = child.left;
+		child.left = parent;
+		numberOfRotation++;
+		return child;
 	}
 
-	public Node singleRight(Node n) {
-		Node n2 = n.right;
-		n.right = n2.left;
-		n2.left = n;
-		return n2;
+	public Node singleRight(Node parent) {
+		Node child = parent.left;
+		parent.left = child.right;
+		child.right = parent;
+		numberOfRotation++;
+		return child;
 	}
 
 	public Node doubleLeft(Node n) {
@@ -369,6 +401,7 @@ public class EditTree {
 		} catch (NullPointerException e) {
 			throw e;
 		}
+		// numberOfRotation++;
 		return singleLeft(n);
 	}
 
@@ -378,6 +411,7 @@ public class EditTree {
 		} catch (NullPointerException e) {
 			throw e;
 		}
+		// numberOfRotation++;
 		return singleRight(n);
 	}
 }
