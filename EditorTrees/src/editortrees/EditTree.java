@@ -170,28 +170,32 @@ public class EditTree {
 	private Node add(char ch, Node t) {
 		if (t == null) {
 			return new Node(ch);
-		} else if (ch < t.element) {
+		}
 
-			t.left = add(ch, t.left);
-			t.left.parent = t;
+		t.right = add(ch, t.right);
+		t.right.parent = t;
+
+		if (t.left == null && t.right == null) {
+			t.balance = Code.SAME;
+		} else if (t.left != null && t.right == null) {
 			t.balance = Code.LEFT;
-
-			if (t.left != null) {
-				t.rank = t.left.size();
-			} else {
-				t.rank = 0;
-			}
-
-		} else if (ch > t.element) {
-
-			t.right = add(ch, t.right);
-			t.right.parent = t;
+		} else if (t.left == null && t.right != null) {
 			t.balance = Code.RIGHT;
-			if (t.left != null) {
-				t.rank = t.left.size();
-			} else {
-				t.rank = 0;
+		} else if (t.left != null && t.right != null) {
+
+			if (t.left.size() < t.right.size()) {
+				t.balance = Code.RIGHT;
+			} else if (t.left.size() > t.right.size()) {
+				t.balance = Code.LEFT;
+			} else if (t.left.size() == t.right.size()) {
+				t.balance = Code.SAME;
 			}
+		}
+
+		if (t.left != null) {
+			t.rank = t.left.size();
+		} else {
+			t.rank = 0;
 		}
 		return t;
 	}
