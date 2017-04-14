@@ -457,13 +457,10 @@ public class EditTree {
 
 	public Node singleLeft(Node parent) {
 		Node child = parent.right;
-
 		child.rank = child.rank + parent.rank + 1;
-
 		parent.right = child.left;
 		child.left = parent;
 		numberOfRotation++;
-
 		child.balance = Code.SAME;
 		parent.balance = Code.SAME;
 		return child;
@@ -471,7 +468,6 @@ public class EditTree {
 
 	public Node singleRight(Node parent) {
 		Node child = parent.left;
-
 		parent.rank = parent.rank - child.rank - 1;
 		parent.left = child.right;
 		child.right = parent;
@@ -488,6 +484,8 @@ public class EditTree {
 		c.left = b.right;
 		b.left = a;
 		b.right = c;
+		c.rank = c.rank - b.rank - 1;
+		b.rank += a.rank + 1;
 		a.balance = Code.SAME;
 		b.balance = Code.SAME;
 		c.balance = Code.SAME;
@@ -502,6 +500,8 @@ public class EditTree {
 		c.right = b.left;
 		b.right = a;
 		b.left = c;
+		a.rank = a.rank - c.rank - b.rank - 2;
+		b.rank += c.rank + 1;
 		a.balance = Code.SAME;
 		b.balance = Code.SAME;
 		c.balance = Code.SAME;
