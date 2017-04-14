@@ -230,12 +230,20 @@ public class EditTree {
 				current.left = a;
 				current.left.parent = current;
 
-				while (current != null) {
+				while (current != this.root) {
 					if (current.balance.equals(Code.LEFT)) {
-						if (current.parent != null) {
-							current.parent.left = singleRight(current);
-						} else {
-							this.root = singleRight(current);
+						if (current.parent.left.equals(current)) {
+							if (current.parent != null) {
+								current.parent.left = singleRight(current);
+							} else {
+								this.root = singleRight(current);
+							}
+						} else if (current.parent.right.equals(current)) {
+							if (current.parent != null) {
+								current.parent.right = doubleRight(current);
+							} else {
+								this.root = doubleRight(current);
+							}
 						}
 					} else if (current.balance.equals(Code.SAME)) {
 						current.balance = Code.LEFT;
@@ -243,9 +251,6 @@ public class EditTree {
 						current.balance = Code.SAME;
 					}
 					current = current.parent;
-					if (current == this.root) {
-						break;
-					}
 				}
 
 				return;
@@ -259,10 +264,22 @@ public class EditTree {
 				current.right = a;
 				current.right.parent = current;
 				while (current != this.root) {
-					if (current.balance.equals(Code.LEFT)) {
-						current.parent.right = singleLeft(current);
+					if (current.balance.equals(Code.RIGHT)) {
+						if (current.parent.right.equals(current)) {
+							if (current.parent != null) {
+								current.parent.right = singleLeft(current);
+							} else {
+								this.root = singleRight(current);
+							}
+						} else if (current.parent.left.equals(current)) {
+							if (current.parent != null) {
+								current.parent.left = doubleLeft(current);
+							} else {
+								this.root = doubleRight(current);
+							}
+						}
 					} else if (current.balance.equals(Code.SAME)) {
-						current.balance = Code.LEFT;
+						current.balance = Code.RIGHT;
 					} else {
 						current.balance = Code.SAME;
 					}
@@ -464,23 +481,31 @@ public class EditTree {
 		return child;
 	}
 
-	public Node doubleLeft(Node n) {
-		try {
-			n.left = singleRight(n.left);
-		} catch (NullPointerException e) {
-			throw e;
-		}
-		// numberOfRotation++;
-		return singleLeft(n);
+	public Node doubleLeft(Node a) {
+		Node c = a.right;
+		Node b = c.left;
+		a.right = b.left;
+		c.left = b.right;
+		b.left = a;
+		b.right = c;
+		a.balance = Code.SAME;
+		b.balance = Code.SAME;
+		c.balance = Code.SAME;
+		numberOfRotation++;
+		return b;
 	}
 
-	public Node doubleRight(Node n) {
-		try {
-			n.right = singleLeft(n.right);
-		} catch (NullPointerException e) {
-			throw e;
-		}
-		// numberOfRotation++;
-		return singleRight(n);
+	public Node doubleRight(Node a) {
+		Node c = a.left;
+		Node b = c.right;
+		a.left = b.right;
+		c.right = b.left;
+		b.right = a;
+		b.left = c;
+		a.balance = Code.SAME;
+		b.balance = Code.SAME;
+		c.balance = Code.SAME;
+		numberOfRotation++;
+		return b;
 	}
 }
