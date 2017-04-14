@@ -163,41 +163,41 @@ public class EditTree {
 		// you!
 		// 2. Unit tests are cumulative, and many things are based on add(), so
 		// make sure that you get this one correct.
-		this.root = add(ch, this.root);
+		if (this.root == null) {
+			this.root = new Node(ch);
+		} else {
+			add(ch, this.root);
+		}
 
 	}
 
-	private Node add(char ch, Node t) {
-		if (t == null) {
-			return new Node(ch);
-		}
+	private void add(char ch, Node t) {
+		if (t.right == null) {
+			t.right = new Node(ch);
+			t.right.parent = t;
 
-		t.right = add(ch, t.right);
-		t.right.parent = t;
-
-		if (t.left == null && t.right == null) {
-			t.balance = Code.SAME;
-		} else if (t.left != null && t.right == null) {
-			t.balance = Code.LEFT;
-		} else if (t.left == null && t.right != null) {
-			t.balance = Code.RIGHT;
-		} else if (t.left != null && t.right != null) {
-			if (t.left.size() < t.right.size()) {
-				t.balance = Code.RIGHT;
-			} else if (t.left.size() > t.right.size()) {
-				t.balance = Code.LEFT;
-			} else if (t.left.size() == t.right.size()) {
-				t.balance = Code.SAME;
+			while (t != this.root) {
+				if (t.balance.equals(Code.LEFT)) {
+					t.balance = Code.SAME;
+				} else if (t.balance.equals(Code.SAME)) {
+					t.balance = Code.RIGHT;
+				} else {
+					t.parent.right = singleLeft(t);
+				}
+				t = t.parent;
 			}
-		}
-		if (t.parent != null) {
-			if (t.parent.left == null && t.right != null) {
-
-				t = singleLeft(t);
-
+			if (t == root) {
+				if (t.balance.equals(Code.LEFT)) {
+					t.balance = Code.SAME;
+				} else if (t.balance.equals(Code.SAME)) {
+					t.balance = Code.RIGHT;
+				} else {
+					this.root = singleLeft(t);
+				}
 			}
+			return;
 		}
-		return t;
+		add(ch, t.right);
 	}
 
 	/**
