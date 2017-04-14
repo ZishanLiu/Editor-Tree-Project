@@ -253,7 +253,13 @@ public class EditTree {
 					current = current.parent;
 				}
 				if (current == this.root) {
-					if (current.balance.equals(Code.SAME)) {
+					if (current.balance.equals(Code.LEFT)) {
+						if (current.left.balance.equals(Code.LEFT)) {
+							this.root = singleRight(current);
+						} else {
+							this.root = doubleRight(current);
+						}
+					} else if (current.balance.equals(Code.SAME)) {
 						current.balance = Code.LEFT;
 					} else if (current.balance.equals(Code.RIGHT)) {
 						current.balance = Code.SAME;
@@ -291,7 +297,13 @@ public class EditTree {
 					current = current.parent;
 				}
 				if (current == this.root) {
-					if (current.balance.equals(Code.SAME)) {
+					if (current.balance.equals(Code.RIGHT)) {
+						if (current.right.balance.equals(Code.RIGHT)) {
+							this.root = singleLeft(current);
+						} else {
+							this.root = doubleLeft(current);
+						}
+					} else if (current.balance.equals(Code.SAME)) {
 						current.balance = Code.RIGHT;
 					} else if (current.balance.equals(Code.LEFT)) {
 						current.balance = Code.SAME;
