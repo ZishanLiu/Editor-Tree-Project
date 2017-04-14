@@ -46,7 +46,7 @@ public class Node {
 		this.right = null;
 		this.rank = getRank();
 		this.balance = Code.SAME;
-		this.wrap = wrap;
+		this.wrap = new DisplayableNodeWrapper(this);
 	}
 
 	public Node(char ch) {
@@ -55,6 +55,7 @@ public class Node {
 		this.right = null;
 		this.rank = getRank();
 		this.balance = Code.SAME;
+		this.wrap = new DisplayableNodeWrapper(this);
 	}
 
 	public int height() {
