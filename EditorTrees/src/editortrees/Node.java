@@ -33,6 +33,7 @@ public class Node {
 	int rank; // inorder position of this node within its own subtree.
 	Code balance;
 	Node parent;
+	DisplayableNodeWrapper wrap;
 	// Feel free to add other fields that you find useful
 
 	// You will probably want to add several other methods
@@ -45,6 +46,7 @@ public class Node {
 		this.right = null;
 		this.rank = getRank();
 		this.balance = Code.SAME;
+		this.wrap = wrap;
 	}
 
 	public Node(char ch) {
@@ -117,5 +119,57 @@ public class Node {
 		} else {
 			return left.left.getRank() + left.right.getRank() + 1;
 		}
+	}
+
+	public DisplayableNodeWrapper getDisplayableNodePart() {
+
+		return wrap;
+	}
+
+	public boolean hasLeft() {
+		// TODO Auto-generated method stub.
+		if (this.left != null) {
+			return true;
+		}
+		return false;
+	}
+
+	public boolean hasRight() {
+		if (this.right != null) {
+			return true;
+		}
+		return false;
+	}
+
+	public boolean hasParent() {
+		if (this.parent != null) {
+			return true;
+		}
+		return false;
+	}
+
+	public Node getParent() {
+
+		return this.parent;
+	}
+
+	public Node getLeft() {
+
+		return this.left;
+	}
+
+	public Node getRight() {
+
+		return this.right;
+	}
+
+	public char getElement() {
+
+		return this.element;
+	}
+
+	public Code getBalance() {
+		// TODO Auto-generated method stub.
+		return this.balance;
 	}
 }

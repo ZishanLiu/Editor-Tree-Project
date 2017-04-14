@@ -9,6 +9,7 @@ import editortrees.Node.Code;
 
 public class EditTree {
 
+	private DisplayableBinaryTree display;
 	private Node root;
 	private int numberOfRotation = 0;
 
@@ -16,6 +17,7 @@ public class EditTree {
 	 * MILESTONE 1 Construct an empty tree
 	 */
 	public EditTree() {
+		this.display = display;
 		this.root = null;
 	}
 
@@ -25,7 +27,7 @@ public class EditTree {
 	 * @param ch
 	 */
 	public EditTree(char ch) {
-
+		this.display = display;
 		this.root = new Node(ch);
 
 	}
@@ -183,6 +185,7 @@ public class EditTree {
 					t.balance = Code.RIGHT;
 				} else {
 					t.parent.right = singleLeft(t);
+
 				}
 				t = t.parent;
 			}
@@ -193,6 +196,7 @@ public class EditTree {
 					t.balance = Code.RIGHT;
 				} else {
 					this.root = singleLeft(t);
+
 				}
 			}
 			return;
@@ -235,14 +239,18 @@ public class EditTree {
 						if (current.parent.left.equals(current)) {
 							if (current.parent != null) {
 								current.parent.left = singleRight(current);
+								return;
 							} else {
 								this.root = singleRight(current);
+								return;
 							}
 						} else if (current.parent.right.equals(current)) {
 							if (current.parent != null) {
 								current.parent.right = doubleRight(current);
+								return;
 							} else {
 								this.root = doubleRight(current);
+								return;
 							}
 						}
 					} else if (current.balance.equals(Code.SAME)) {
@@ -256,8 +264,10 @@ public class EditTree {
 					if (current.balance.equals(Code.LEFT)) {
 						if (current.left.balance.equals(Code.LEFT)) {
 							this.root = singleRight(current);
+							return;
 						} else {
 							this.root = doubleRight(current);
+							return;
 						}
 					} else if (current.balance.equals(Code.SAME)) {
 						current.balance = Code.LEFT;
@@ -279,14 +289,18 @@ public class EditTree {
 						if (current.parent.right.equals(current)) {
 							if (current.parent != null) {
 								current.parent.right = singleLeft(current);
+								return;
 							} else {
 								this.root = singleRight(current);
+								return;
 							}
 						} else if (current.parent.left.equals(current)) {
 							if (current.parent != null) {
 								current.parent.left = doubleLeft(current);
+								return;
 							} else {
 								this.root = doubleRight(current);
+								return;
 							}
 						}
 					} else if (current.balance.equals(Code.SAME)) {
@@ -300,8 +314,10 @@ public class EditTree {
 					if (current.balance.equals(Code.RIGHT)) {
 						if (current.right.balance.equals(Code.RIGHT)) {
 							this.root = singleLeft(current);
+							return;
 						} else {
 							this.root = doubleLeft(current);
+							return;
 						}
 					} else if (current.balance.equals(Code.SAME)) {
 						current.balance = Code.RIGHT;
@@ -531,4 +547,33 @@ public class EditTree {
 		numberOfRotation += 2;
 		return b;
 	}
+
+	public int slowSize() {
+		if (this.root == null) {
+			return 0;
+		}
+		return this.root.size();
+	}
+
+	public int slowHeight() {
+		if (this.root == null) {
+			return -1;
+		}
+		return this.root.height();
+	}
+
+	public void show() {
+		if (this.display == null) {
+			this.display = new DisplayableBinaryTree(this, 960, 1080, true);
+		} else {
+			this.display.show(true);
+		}
+	}
+
+	public void close() {
+		if (this.display != null) {
+			this.display.close();
+		}
+	}
+
 }
