@@ -44,7 +44,7 @@ public class Node {
 		this.left = null;
 		this.right = null;
 		this.rank = getRank();
-		this.balance = getCode();
+		this.balance = Code.SAME;
 	}
 
 	public Node(char ch) {
@@ -52,7 +52,7 @@ public class Node {
 		this.left = null;
 		this.right = null;
 		this.rank = getRank();
-		this.balance = getCode();
+		this.balance = Code.SAME;
 	}
 
 	public int height() {
@@ -105,9 +105,6 @@ public class Node {
 	}
 
 	public int getRank() {
-		if (this == null) {
-			return 0;
-		}
 		Node left = this.left;
 		if (left == null) {
 			return 0;
@@ -121,23 +118,4 @@ public class Node {
 			return left.left.getRank() + left.right.getRank() + 1;
 		}
 	}
-
-	public Code getCode() {
-		if (left == null && right == null) {
-			return Code.SAME;
-		} else if (left == null) {
-			return Code.RIGHT;
-		} else if (right == null) {
-			return Code.LEFT;
-		} else {
-			if (left.size() > right.size()) {
-				return Code.LEFT;
-			} else if (left.size() < right.size()) {
-				return Code.RIGHT;
-			} else {
-				return Code.SAME;
-			}
-		}
-	}
-
 }
