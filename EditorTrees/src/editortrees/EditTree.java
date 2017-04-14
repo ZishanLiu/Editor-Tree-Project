@@ -182,7 +182,6 @@ public class EditTree {
 		} else if (t.left == null && t.right != null) {
 			t.balance = Code.RIGHT;
 		} else if (t.left != null && t.right != null) {
-
 			if (t.left.size() < t.right.size()) {
 				t.balance = Code.RIGHT;
 			} else if (t.left.size() > t.right.size()) {
@@ -191,11 +190,12 @@ public class EditTree {
 				t.balance = Code.SAME;
 			}
 		}
+		if (t.parent != null) {
+			if (t.parent.left == null && t.right != null) {
 
-		if (t.left != null) {
-			t.rank = t.left.size();
-		} else {
-			t.rank = 0;
+				t = singleLeft(t);
+
+			}
 		}
 		return t;
 	}
@@ -252,10 +252,15 @@ public class EditTree {
 					}
 					current = current.parent;
 				}
-
+				if (current == this.root) {
+					if (current.balance.equals(Code.SAME)) {
+						current.balance = Code.LEFT;
+					} else if (current.balance.equals(Code.RIGHT)) {
+						current.balance = Code.SAME;
+					}
+				}
 				return;
 			}
-			current.left.parent = current;
 			current = current.left;
 			add(ch, pos, current);
 		} else {
@@ -285,9 +290,15 @@ public class EditTree {
 					}
 					current = current.parent;
 				}
+				if (current == this.root) {
+					if (current.balance.equals(Code.SAME)) {
+						current.balance = Code.RIGHT;
+					} else if (current.balance.equals(Code.LEFT)) {
+						current.balance = Code.SAME;
+					}
+				}
 				return;
 			}
-			current.right.parent = current;
 			int rootRank = current.rank;
 			current = current.right;
 			add(ch, pos - rootRank - 1, current);
@@ -489,7 +500,7 @@ public class EditTree {
 		a.balance = Code.SAME;
 		b.balance = Code.SAME;
 		c.balance = Code.SAME;
-		numberOfRotation++;
+		numberOfRotation += 2;
 		return b;
 	}
 
@@ -505,7 +516,7 @@ public class EditTree {
 		a.balance = Code.SAME;
 		b.balance = Code.SAME;
 		c.balance = Code.SAME;
-		numberOfRotation++;
+		numberOfRotation += 2;
 		return b;
 	}
 }
