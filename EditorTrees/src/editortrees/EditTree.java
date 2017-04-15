@@ -448,59 +448,6 @@ public class EditTree {
 		}
 	}
 
-	// while (current != this.root) {
-	// if (current.parent.left.equals(current)) {
-	// if (current.balance.equals(Code.LEFT)) {
-	// if (current.left.balance == Code.LEFT) {
-	// if (current.parent != null) {
-	// current.parent.left = singleRight(current);
-	// return;
-	// } else {
-	// this.root = singleRight(current);
-	// return;
-	// }
-	// } else if (current.left.balance == Code.RIGHT) {
-	// if (current.parent != null) {
-	// current.parent.left = doubleRight(current);
-	// return;
-	// } else {
-	// this.root = doubleRight(current);
-	// return;
-	// }
-	// }
-	// } else if (current.balance.equals(Code.SAME)) {
-	// current.balance = Code.LEFT;
-	// } else {
-	// current.balance = Code.SAME;
-	// }
-	// } else if (current.parent.right.equals(current)) {
-	// if (current.balance.equals(Code.RIGHT)) {
-	// if (current.right.balance == Code.RIGHT) {
-	// if (current.parent != null) {
-	// current.parent.left = singleLeft(current);
-	// return;
-	// } else {
-	// this.root = singleLeft(current);
-	// return;
-	// }
-	// } else if (current.right.balance == Code.LEFT) {
-	// if (current.parent != null) {
-	// current.parent.left = doubleLeft(current);
-	// return;
-	// } else {
-	// this.root = doubleLeft(current);
-	// return;
-	// }
-	// }
-	// } else if (current.balance.equals(Code.SAME)) {
-	// current.balance = Code.RIGHT;
-	// } else {
-	// current.balance = Code.SAME;
-	// }
-	// }
-	// current = current.parent;
-	// }
-
 	/**
 	 * MILESTONE 1
 	 * 
