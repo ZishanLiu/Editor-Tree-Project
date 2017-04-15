@@ -173,35 +173,102 @@ public class EditTree {
 
 	}
 
-	private void add(char ch, Node t) {
-		if (t.right == null) {
-			t.right = new Node(ch);
-			t.right.parent = t;
+	private void add(char ch, Node current) {
+		if (current.right == null) {
+			current.right = new Node(ch);
+			current.right.parent = current;
+			Node child = current.right;
+			//
+			// while (t != this.root) {
+			// if (t.balance.equals(Code.LEFT)) {
+			// t.balance = Code.SAME;
+			// } else if (t.balance.equals(Code.SAME)) {
+			// t.balance = Code.RIGHT;
+			// } else {
+			// t.parent.right = singleLeft(t);
+			//
+			// }
+			// t = t.parent;
+			// }
+			// if (t == root) {
+			// if (t.balance.equals(Code.LEFT)) {
+			// t.balance = Code.SAME;
+			// } else if (t.balance.equals(Code.SAME)) {
+			// t.balance = Code.RIGHT;
+			// } else {
+			// this.root = singleLeft(t);
+			//
+			// }
+			// }
+			// return;
 
-			while (t != this.root) {
-				if (t.balance.equals(Code.LEFT)) {
-					t.balance = Code.SAME;
-				} else if (t.balance.equals(Code.SAME)) {
-					t.balance = Code.RIGHT;
+			while (current != this.root) {
+				if (current.balance.equals(Code.RIGHT)) {
+					if (current.right.balance == Code.RIGHT) {
+						if (current.parent != null) {
+							if (current.parent.left.equals(current)) {
+								current.parent.left = singleLeft(current);
+								return;
+							} else if (current.parent.right.equals(current)) {
+								current.parent.right = singleLeft(current);
+								return;
+							}
+							return;
+						} else {
+							this.root = singleLeft(current);
+							return;
+						}
+					} else if (current.right.balance == Code.LEFT) {
+						if (current.parent != null) {
+							if (current.parent.left.equals(current)) {
+								current.parent.left = doubleLeft(current);
+							} else if (current.parent.right.equals(current)) {
+								current.parent.right = doubleLeft(current);
+							}
+							return;
+						} else {
+							this.root = doubleLeft(current);
+							return;
+						}
+					}
+					return;
+
+				} else if (current.balance.equals(Code.SAME)) {
+					if (current.left != null && current.right != null) {
+						if (current.left.balance != Code.SAME || current.right.balance != Code.SAME) {
+							current.balance = Code.RIGHT;
+						}
+					} else {
+						current.balance = Code.RIGHT;
+					}
 				} else {
-					t.parent.right = singleLeft(t);
-
+					current.balance = Code.SAME;
 				}
-				t = t.parent;
+				child = current;
+				current = current.parent;
 			}
-			if (t == root) {
-				if (t.balance.equals(Code.LEFT)) {
-					t.balance = Code.SAME;
-				} else if (t.balance.equals(Code.SAME)) {
-					t.balance = Code.RIGHT;
-				} else {
-					this.root = singleLeft(t);
 
+			if (current.balance.equals(Code.RIGHT)) {
+				if (current.right.balance.equals(Code.RIGHT)) {
+					this.root = singleLeft(current);
+				} else if (current.right.balance.equals(Code.LEFT)) {
+					this.root = doubleLeft(current);
 				}
+				return;
+			} else if (current.balance.equals(Code.SAME)) {
+				if (current.left != null && current.right != null) {
+					if (current.left.balance != Code.SAME || current.right.balance != Code.SAME) {
+						current.balance = Code.RIGHT;
+					}
+				} else {
+					current.balance = Code.RIGHT;
+				}
+			} else if (current.balance.equals(Code.LEFT)) {
+				current.balance = Code.SAME;
 			}
 			return;
 		}
-		add(ch, t.right);
+		add(ch, current.right);
 	}
 
 	/**
