@@ -178,29 +178,6 @@ public class EditTree {
 			current.right = new Node(ch);
 			current.right.parent = current;
 			Node child = current.right;
-			//
-			// while (t != this.root) {
-			// if (t.balance.equals(Code.LEFT)) {
-			// t.balance = Code.SAME;
-			// } else if (t.balance.equals(Code.SAME)) {
-			// t.balance = Code.RIGHT;
-			// } else {
-			// t.parent.right = singleLeft(t);
-			//
-			// }
-			// t = t.parent;
-			// }
-			// if (t == root) {
-			// if (t.balance.equals(Code.LEFT)) {
-			// t.balance = Code.SAME;
-			// } else if (t.balance.equals(Code.SAME)) {
-			// t.balance = Code.RIGHT;
-			// } else {
-			// this.root = singleLeft(t);
-			//
-			// }
-			// }
-			// return;
 
 			while (current != this.root) {
 				if (current.balance.equals(Code.RIGHT)) {
@@ -482,7 +459,7 @@ public class EditTree {
 		if (pos >= this.size() || pos < 0) {
 			throw new IndexOutOfBoundsException();
 		}
-		return '%';
+		return this.toString().charAt(pos);
 	}
 
 	/**
