@@ -317,90 +317,95 @@ public class EditTree {
 
 	public RefreshWrapper refresh(Node current, Node child) {
 		while (current != this.root) {
-			if (current.left.equals(child)) {
-				if (current.balance.equals(Code.LEFT)) {
-					if (current.left.balance == Code.LEFT) {
-						if (current.parent != null) {
-							if (current.parent.left.equals(current)) {
-								current.parent.left = singleRight(current);
-								return new RefreshWrapper(current, child, true);
-							} else if (current.parent.right.equals(current)) {
-								current.parent.right = singleRight(current);
-								return new RefreshWrapper(current, child, true);
-							}
-							return new RefreshWrapper(current, child, false);
-						} else {
-							this.root = singleRight(current);
-							return new RefreshWrapper(current, child, true);
-						}
-					} else if (current.left.balance == Code.RIGHT) {
-						if (current.parent != null) {
-							if (current.parent.left.equals(current)) {
-								current.parent.left = doubleRight(current);
-								return new RefreshWrapper(current, child, true);
-							} else if (current.parent.right.equals(current)) {
-								current.parent.right = doubleRight(current);
+			if (current.left != null) {
+				if (current.left.equals(child)) {
+					if (current.balance.equals(Code.LEFT)) {
+						if (current.left.balance == Code.LEFT) {
+							if (current.parent != null) {
+								if (current.parent.left.equals(current)) {
+									current.parent.left = singleRight(current);
+									return new RefreshWrapper(current, child, true);
+								} else if (current.parent.right.equals(current)) {
+									current.parent.right = singleRight(current);
+									return new RefreshWrapper(current, child, true);
+								}
+								return new RefreshWrapper(current, child, false);
+							} else {
+								this.root = singleRight(current);
 								return new RefreshWrapper(current, child, true);
 							}
-							return new RefreshWrapper(current, child, false);
-						} else {
-							this.root = doubleRight(current);
-							return new RefreshWrapper(current, child, true);
+						} else if (current.left.balance == Code.RIGHT) {
+							if (current.parent != null) {
+								if (current.parent.left.equals(current)) {
+									current.parent.left = doubleRight(current);
+									return new RefreshWrapper(current, child, true);
+								} else if (current.parent.right.equals(current)) {
+									current.parent.right = doubleRight(current);
+									return new RefreshWrapper(current, child, true);
+								}
+								return new RefreshWrapper(current, child, false);
+							} else {
+								this.root = doubleRight(current);
+								return new RefreshWrapper(current, child, true);
+							}
 						}
-					}
-					return new RefreshWrapper(current, child, false);
-				} else if (current.balance.equals(Code.SAME)) {
-					if (current.left != null && current.right != null) {
-						if (current.left.balance != Code.SAME || current.right.balance != Code.SAME) {
+						return new RefreshWrapper(current, child, false);
+					} else if (current.balance.equals(Code.SAME)) {
+						if (current.left != null && current.right != null) {
+							if (current.left.balance != Code.SAME || current.right.balance != Code.SAME) {
+								current.balance = Code.LEFT;
+							}
+						} else {
 							current.balance = Code.LEFT;
 						}
 					} else {
-						current.balance = Code.LEFT;
+						current.balance = Code.SAME;
 					}
-				} else {
-					current.balance = Code.SAME;
 				}
-			} else if (current.right.equals(child)) {
-				if (current.balance.equals(Code.RIGHT)) {
-					if (current.right.balance == Code.RIGHT) {
-						if (current.parent != null) {
-							if (current.parent.left.equals(current)) {
-								current.parent.left = singleLeft(current);
-								return new RefreshWrapper(current, child, true);
-							} else if (current.parent.right.equals(current)) {
-								current.parent.right = singleLeft(current);
+			}
+			if (current.right != null) {
+				if (current.right.equals(child)) {
+					if (current.balance.equals(Code.RIGHT)) {
+						if (current.right.balance == Code.RIGHT) {
+							if (current.parent != null) {
+								if (current.parent.left.equals(current)) {
+									current.parent.left = singleLeft(current);
+									return new RefreshWrapper(current, child, true);
+								} else if (current.parent.right.equals(current)) {
+									current.parent.right = singleLeft(current);
+									return new RefreshWrapper(current, child, true);
+								}
+								return new RefreshWrapper(current, child, false);
+							} else {
+								this.root = singleLeft(current);
 								return new RefreshWrapper(current, child, true);
 							}
-							return new RefreshWrapper(current, child, false);
-						} else {
-							this.root = singleLeft(current);
-							return new RefreshWrapper(current, child, true);
-						}
-					} else if (current.right.balance == Code.LEFT) {
-						if (current.parent != null) {
-							if (current.parent.left.equals(current)) {
-								current.parent.left = doubleLeft(current);
-							} else if (current.parent.right.equals(current)) {
-								current.parent.right = doubleLeft(current);
+						} else if (current.right.balance == Code.LEFT) {
+							if (current.parent != null) {
+								if (current.parent.left.equals(current)) {
+									current.parent.left = doubleLeft(current);
+								} else if (current.parent.right.equals(current)) {
+									current.parent.right = doubleLeft(current);
+								}
+								return new RefreshWrapper(current, child, true);
+							} else {
+								this.root = doubleLeft(current);
+								return new RefreshWrapper(current, child, true);
 							}
-							return new RefreshWrapper(current, child, true);
-						} else {
-							this.root = doubleLeft(current);
-							return new RefreshWrapper(current, child, true);
 						}
-					}
-					return new RefreshWrapper(current, child, false);
+						return new RefreshWrapper(current, child, false);
 
-				} else if (current.balance.equals(Code.SAME)) {
-					if (current.left != null && current.right != null) {
-						if (current.left.balance != Code.SAME || current.right.balance != Code.SAME) {
+					} else if (current.balance.equals(Code.SAME)) {
+						if (current.left != null && current.right != null) {
+							if (current.left.balance != Code.SAME || current.right.balance != Code.SAME) {
+								current.balance = Code.RIGHT;
+							}
+						} else {
 							current.balance = Code.RIGHT;
 						}
 					} else {
-						current.balance = Code.RIGHT;
+						current.balance = Code.SAME;
 					}
-				} else {
-					current.balance = Code.SAME;
 				}
 			}
 			child = current;
