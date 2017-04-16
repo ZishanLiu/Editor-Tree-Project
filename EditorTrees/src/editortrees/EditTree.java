@@ -617,7 +617,14 @@ public class EditTree {
 		Node child = parent.right;
 		child.rank = child.rank + parent.rank + 1;
 		parent.right = child.left;
+
+		if (parent.right != null) {
+			parent.right.parent = parent;
+		}
 		child.left = parent;
+
+		parent.parent = child;
+
 		numberOfRotation++;
 		child.balance = Code.SAME;
 		parent.balance = Code.SAME;
@@ -628,7 +635,14 @@ public class EditTree {
 		Node child = parent.left;
 		parent.rank = parent.rank - child.rank - 1;
 		parent.left = child.right;
+
+		if (parent.left != null) {
+			parent.left.parent = parent;
+		}
 		child.right = parent;
+
+		parent.parent = child;
+
 		numberOfRotation++;
 		child.balance = Code.SAME;
 		parent.balance = Code.SAME;
@@ -639,11 +653,28 @@ public class EditTree {
 		Node c = a.right;
 		Node b = c.left;
 		a.right = b.left;
+
+		if (a.right != null) {
+			a.right.parent = a;
+		}
+
 		c.left = b.right;
+
+		if (c.left != null) {
+			c.left.parent = c;
+		}
+
 		b.left = a;
+
+		a.parent = b;
+
 		b.right = c;
+
+		c.parent = b;
+
 		c.rank = c.rank - b.rank - 1;
 		b.rank += a.rank + 1;
+
 		a.balance = Code.SAME;
 		b.balance = Code.SAME;
 		c.balance = Code.SAME;
@@ -655,11 +686,26 @@ public class EditTree {
 		Node c = a.left;
 		Node b = c.right;
 		a.left = b.right;
+
+		if (a.left != null) {
+			a.left.parent = a;
+		}
 		c.right = b.left;
+
+		if (c.right != null) {
+			c.right.parent = c;
+		}
 		b.right = a;
+
+		a.parent = b;
+
 		b.left = c;
+
+		c.parent = b;
+
 		a.rank = a.rank - c.rank - b.rank - 2;
 		b.rank += c.rank + 1;
+
 		a.balance = Code.SAME;
 		b.balance = Code.SAME;
 		c.balance = Code.SAME;
