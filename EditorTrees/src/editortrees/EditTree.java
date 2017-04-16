@@ -17,7 +17,7 @@ public class EditTree {
 	 * MILESTONE 1 Construct an empty tree
 	 */
 	public EditTree() {
-		this.display = display;
+		this.display = new DisplayableBinaryTree(this, 0, 0, false);
 		this.root = null;
 	}
 
@@ -27,7 +27,7 @@ public class EditTree {
 	 * @param ch
 	 */
 	public EditTree(char ch) {
-		this.display = display;
+		this.display = new DisplayableBinaryTree(this, 0, 0, false);
 		this.root = new Node(ch);
 
 	}
@@ -184,10 +184,14 @@ public class EditTree {
 					if (current.right.balance == Code.RIGHT) {
 						if (current.parent != null) {
 							if (current.parent.left.equals(current)) {
+								Node p = current.parent;
 								current.parent.left = singleLeft(current);
+								p.left.parent = p;
 								return;
 							} else if (current.parent.right.equals(current)) {
+								Node p = current.parent;
 								current.parent.right = singleLeft(current);
+								p.right.parent = p;
 								return;
 							}
 							return;
@@ -198,9 +202,13 @@ public class EditTree {
 					} else if (current.right.balance == Code.LEFT) {
 						if (current.parent != null) {
 							if (current.parent.left.equals(current)) {
+								Node p = current.parent;
 								current.parent.left = doubleLeft(current);
+								p.left.parent = p;
 							} else if (current.parent.right.equals(current)) {
+								Node p = current.parent;
 								current.parent.right = doubleLeft(current);
+								p.right.parent = p;
 							}
 							return;
 						} else {
