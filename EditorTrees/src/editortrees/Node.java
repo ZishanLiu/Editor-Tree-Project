@@ -62,16 +62,11 @@ public class Node {
 		if (left == null && right == null) {
 			return 0;
 		} else if (left == null) {
-			return right.height();
+			return 1 + right.height();
 		} else if (right == null) {
-			return left.height();
+			return 1 + left.height();
 		} else {
-			int left = this.left.height();
-			int right = this.right.height();
-			if (left > right) {
-				return left + 1;
-			}
-			return right + 1;
+			return 1 + Math.max(left.height(), right.height());
 		}
 	}
 

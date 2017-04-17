@@ -675,23 +675,16 @@ public class EditTree {
 	public Node doubleLeft(Node a) {
 		Node c = a.right;
 		Node b = c.left;
-		if (b.balance == Code.SAME) {
+		if (b.balance == Code.LEFT) {
+			a.balance = Code.SAME;
+			c.balance = Code.RIGHT;
+		} else if (b.balance == Code.RIGHT) {
+			a.balance = Code.LEFT;
 			c.balance = Code.SAME;
 		} else {
-			c.balance = a.balance;
-		}
-		if (a.rank > b.rank) {
-			a.balance = Code.LEFT;
-		} else if (a.rank == b.rank) {
 			a.balance = Code.SAME;
-		} else if (a.rank < b.rank) {
-			a.balance = Code.RIGHT;
+			c.balance = Code.SAME;
 		}
-		// if (c.balance == Code.LEFT) {
-		// c.balance = Code.SAME;
-		// } else if (c.balance == Code.SAME) {
-		// c.balance = Code.RIGHT;
-		// }
 		a.right = b.left;
 		if (a.right != null) {
 			a.right.parent = a;
@@ -707,7 +700,6 @@ public class EditTree {
 		c.rank = c.rank - b.rank - 1;
 		b.rank += a.rank + 1;
 		b.balance = Code.SAME;
-		// c.balance=Code.SAME;
 		numberOfRotation += 2;
 		return b;
 	}
@@ -715,22 +707,15 @@ public class EditTree {
 	public Node doubleRight(Node a) {
 		Node c = a.left;
 		Node b = c.right;
-		// if(b.balance==Code.SAME){
-		// a.balance=Code.SAME;
-		// }else{
-		// a.balance=c.balance;
-		// }
-		if (c.rank > b.rank) {
-			c.balance = Code.LEFT;
-		} else if (c.rank == b.rank) {
+		if (b.balance == Code.LEFT) {
 			c.balance = Code.SAME;
-		} else if (c.rank < b.rank) {
-			c.balance = Code.RIGHT;
-		}
-		if (a.balance == Code.LEFT) {
-			a.balance = Code.SAME;
-		} else if (a.balance == Code.SAME) {
 			a.balance = Code.RIGHT;
+		} else if (b.balance == Code.RIGHT) {
+			c.balance = Code.LEFT;
+			a.balance = Code.SAME;
+		} else {
+			a.balance = Code.SAME;
+			c.balance = Code.SAME;
 		}
 		a.left = b.right;
 		if (a.left != null) {
@@ -746,7 +731,6 @@ public class EditTree {
 		c.parent = b;
 		a.rank = a.rank - c.rank - b.rank - 2;
 		b.rank += c.rank + 1;
-		// a.balance = Code.SAME;
 		b.balance = Code.SAME;
 		numberOfRotation += 2;
 		return b;
