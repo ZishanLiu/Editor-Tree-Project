@@ -35,7 +35,7 @@ public class Node {
 	Node parent;
 	DisplayableNodeWrapper wrap;
 	// Feel free to add other fields that you find useful
-
+	int numberOfRotation = 0;
 	// You will probably want to add several other methods
 
 	// For the following methods, you should fill in the details so that they
@@ -44,128 +44,258 @@ public class Node {
 		this.element = '\0';
 		this.left = null;
 		this.right = null;
-		this.rank = getRank();
+		this.rank = 0;
 		this.balance = Code.SAME;
 		this.wrap = new DisplayableNodeWrapper(this);
 	}
 
 	public Node(char ch) {
 		this.element = ch;
-		this.left = null;
-		this.right = null;
-		this.rank = getRank();
+		this.left = EditTree.NULL_NODE;
+		this.right = EditTree.NULL_NODE;
+		this.rank = 0;
 		this.balance = Code.SAME;
 		this.wrap = new DisplayableNodeWrapper(this);
 	}
 
 	public int height() {
-		if (left == null && right == null) {
-			return 0;
-		} else if (left == null) {
-			return 1 + right.height();
-		} else if (right == null) {
-			return 1 + left.height();
-		} else {
-			return 1 + Math.max(left.height(), right.height());
+		if (this == EditTree.NULL_NODE) {
+			return -1;
 		}
+		return 1 + Math.max(left.height(), right.height());
 	}
 
 	public int size() {
-		// if (this.right != null) {
-		// return this.right.rightSize() + 1 + this.rank;
-		// }
-		// return 1 + this.rank;
-		// }
-		//
-		// public int rightSize() {
-		// if (this == null) {
-		// return 0;
-		// }
-		// if (left == null && right == null) {
-		// return 1;
-		// } else if (left == null) {
-		// return right.rightSize() + 1;
-		// } else if (right == null) {
-		// return left.rightSize() + 1;
-		// } else {
-		// return left.rightSize() + right.rightSize() + 1;
-		// }
-
-		if (left == null && right == null) {
-			return 1;
-		} else if (left == null) {
-			return right.size() + 1;
-		} else if (right == null) {
-			return left.size() + 1;
-		} else {
-			return left.size() + right.size() + 1;
+		if (this == EditTree.NULL_NODE) {
+			return 0;
 		}
+		return this.rank + right.size() + 1;
+	}
+
+	public Wrapper add(char ch, int pos, Node parent) {
+		if (this == EditTree.NULL_NODE) {
+			Node add = new Node(ch);
+			add.parent = parent;
+			return new Wrapper(add, true);
+		}
+		if (pos <= this.rank) {
+			this.rank++;
+			Wrapper temp = this.left.add(ch, pos, this.left);
+			this.left = temp.getNode();
+			Boolean bool = temp.heightChanged;
+			if (!bool) {
+				return new Wrapper(this, false);
+			}
+			if (this.balance == Code.SAME) {
+				this.balance = Code.LEFT;
+				return new Wrapper(this, true);
+			} else if (this.balance == Code.RIGHT) {
+				this.balance = Code.SAME;
+			} else if (this.balance == Code.LEFT) {
+				if (this.left.balance == Code.LEFT) {
+					Node output = this.singleRight(this);
+					output.parent = parent;
+					return new Wrapper(output, false);
+				} else if (this.left.balance == Code.RIGHT) {
+					Node output = this.doubleRight(this);
+					output.parent = parent;
+					return new Wrapper(output, false);
+				} else {
+					return new Wrapper(this, false);
+				}
+			}
+		} else {
+			Wrapper temp = this.right.add(ch, pos - this.rank - 1, this.right);
+			this.right = temp.getNode();
+			Boolean bool = temp.heightChanged;
+			if (!bool) {
+				return new Wrapper(this, false);
+			}
+			if (this.balance == Code.SAME) {
+				this.balance = Code.RIGHT;
+				return new Wrapper(this, true);
+			} else if (this.balance == Code.LEFT) {
+				this.balance = Code.SAME;
+			} else if (this.balance == Code.RIGHT) {
+				if (this.right.balance == Code.RIGHT) {
+					Node output = this.singleLeft(this);
+					output.parent = parent;
+					return new Wrapper(output, false);
+				} else if (this.right.balance == Code.LEFT) {
+					Node output = this.doubleLeft(this);
+					output.parent = parent;
+					return new Wrapper(output, false);
+				} else {
+					return new Wrapper(this, false);
+				}
+			}
+		}
+		return new Wrapper(this, false);
+	}
+
+	public int totalRotationCount() {
+		if (this == EditTree.NULL_NODE) {
+			return 0;
+		}
+		return this.numberOfRotation + left.totalRotationCount() + right.totalRotationCount();
 	}
 
 	public int getRank() {
-		Node left = this.left;
-		if (left == null) {
-			return 0;
-		} else if (left.left == null && left.right == null) {
-			return 1;
-		} else if (left.left == null) {
-			return left.right.getRank() + 1;
-		} else if (left.right == null) {
-			return left.left.getRank() + 1;
-		} else {
-			return left.left.getRank() + left.right.getRank() + 1;
-		}
+		return left.size();
 	}
 
 	public DisplayableNodeWrapper getDisplayableNodePart() {
-
 		return wrap;
 	}
 
 	public boolean hasLeft() {
-		// TODO Auto-generated method stub.
-		if (this.left != null) {
+		if (this.left != EditTree.NULL_NODE) {
 			return true;
 		}
 		return false;
 	}
 
 	public boolean hasRight() {
-		if (this.right != null) {
+		if (this.right != EditTree.NULL_NODE) {
 			return true;
 		}
 		return false;
 	}
 
 	public boolean hasParent() {
-		if (this.parent != null) {
+		if (this.parent != EditTree.NULL_NODE) {
 			return true;
 		}
 		return false;
 	}
 
 	public Node getParent() {
-
 		return this.parent;
 	}
 
 	public Node getLeft() {
-
 		return this.left;
 	}
 
 	public Node getRight() {
-
 		return this.right;
 	}
 
 	public char getElement() {
-
 		return this.element;
 	}
 
 	public Code getBalance() {
-		// TODO Auto-generated method stub.
 		return this.balance;
+	}
+
+	public Node singleLeft(Node parent) {
+		Node child = parent.right;
+		child.rank = child.rank + parent.rank + 1;
+		parent.right = child.left;
+		if (parent.right != EditTree.NULL_NODE) {
+			parent.right.parent = parent;
+		}
+		child.left = parent;
+		parent.parent = child;
+		this.numberOfRotation++;
+		child.balance = Code.SAME;
+		parent.balance = Code.SAME;
+		return child;
+	}
+
+	public Node singleRight(Node parent) {
+		Node child = parent.left;
+		parent.rank = parent.rank - child.rank - 1;
+		parent.left = child.right;
+		if (parent.left != EditTree.NULL_NODE) {
+			parent.left.parent = parent;
+		}
+		child.right = parent;
+		parent.parent = child;
+		this.numberOfRotation++;
+		child.balance = Code.SAME;
+		parent.balance = Code.SAME;
+		return child;
+	}
+
+	public Node doubleLeft(Node a) {
+		Node c = a.right;
+		Node b = c.left;
+		if (b.balance == Code.LEFT) {
+			a.balance = Code.SAME;
+			c.balance = Code.RIGHT;
+		} else if (b.balance == Code.RIGHT) {
+			a.balance = Code.LEFT;
+			c.balance = Code.SAME;
+		} else {
+			a.balance = Code.SAME;
+			c.balance = Code.SAME;
+		}
+		a.right = b.left;
+		if (a.right != EditTree.NULL_NODE) {
+			a.right.parent = a;
+		}
+		c.left = b.right;
+		if (c.left != EditTree.NULL_NODE) {
+			c.left.parent = c;
+		}
+		b.left = a;
+		a.parent = b;
+		b.right = c;
+		c.parent = b;
+		c.rank = c.rank - b.rank - 1;
+		b.rank += a.rank + 1;
+		b.balance = Code.SAME;
+		this.numberOfRotation += 2;
+		return b;
+	}
+
+	public Node doubleRight(Node a) {
+		Node c = a.left;
+		Node b = c.right;
+		if (b.balance == Code.LEFT) {
+			c.balance = Code.SAME;
+			a.balance = Code.RIGHT;
+		} else if (b.balance == Code.RIGHT) {
+			c.balance = Code.LEFT;
+			a.balance = Code.SAME;
+		} else {
+			a.balance = Code.SAME;
+			c.balance = Code.SAME;
+		}
+		a.left = b.right;
+		if (a.left != EditTree.NULL_NODE) {
+			a.left.parent = a;
+		}
+		c.right = b.left;
+		if (c.right != EditTree.NULL_NODE) {
+			c.right.parent = c;
+		}
+		b.right = a;
+		a.parent = b;
+		b.left = c;
+		c.parent = b;
+		a.rank = a.rank - c.rank - b.rank - 2;
+		b.rank += c.rank + 1;
+		b.balance = Code.SAME;
+		this.numberOfRotation += 2;
+		return b;
+	}
+
+	class Wrapper {
+		private Node node;
+		private boolean heightChanged;
+		private int numberOfRotation;
+
+		public Wrapper(Node node, boolean heightChanged) {
+			this.node = node;
+			this.heightChanged = heightChanged;
+			this.numberOfRotation = numberOfRotation;
+		}
+
+		public Node getNode() {
+			return node;
+		}
 	}
 }
