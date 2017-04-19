@@ -11,6 +11,8 @@ public class EditTree {
 
 	private DisplayableBinaryTree display;
 	private Node root;
+	
+	//Use NULL_NODE to avoid checking if node is null for too many situations.
 	public static final Node NULL_NODE = new Node();
 
 	/**
@@ -27,6 +29,7 @@ public class EditTree {
 	 * @param ch
 	 */
 	public EditTree(char ch) {
+		//
 		this.root = new Node(ch);
 		this.display = new DisplayableBinaryTree(this, 0, 0, false);
 	}
@@ -68,6 +71,7 @@ public class EditTree {
 	 */
 	@Override
 	public String toString() {
+		//build inorder toString
 		String result = "";
 		if (this.root == NULL_NODE) {
 			return result;
@@ -80,6 +84,7 @@ public class EditTree {
 	}
 
 	private ArrayList<Character> toInorderList(Node node) {
+		//simple inorder traversal
 		Stack<Node> stack = new Stack<Node>();
 		ArrayList<Character> result = new ArrayList<Character>();
 		Node temp = root;
@@ -116,6 +121,7 @@ public class EditTree {
 			return "[" + result + "]";
 		}
 		ArrayList<Node> a = toPreorderList(this.root);
+		//print out elements, ranks and balance codes for each node
 		for (Node ch : a) {
 			result += ch.element;
 			result += ch.rank + ch.balance.toString() + "," + " ";
@@ -124,6 +130,7 @@ public class EditTree {
 	}
 
 	private ArrayList<Node> toPreorderList(Node root) {
+		//simple preorder traversal
 		ArrayList<Node> returnList = new ArrayList<Node>();
 		if (root == NULL_NODE) {
 			return returnList;
@@ -159,6 +166,9 @@ public class EditTree {
 		// you!
 		// 2. Unit tests are cumulative, and many things are based on add(), so
 		// make sure that you get this one correct.
+		
+		//add with or without pos will use the same add method.
+		
 		add(ch, this.size());
 	}
 
@@ -174,8 +184,11 @@ public class EditTree {
 	 */
 	public void add(char ch, int pos) throws IndexOutOfBoundsException {
 		if (pos < 0 || pos > this.size()) {
+			//speical cases
 			throw new IndexOutOfBoundsException();
 		}
+		//use wrapper to keep the node.
+		//call add method in node.
 		Wrapper rootWrapper = this.root.add(ch, pos, this.root);
 		this.root = rootWrapper.getNode();
 
@@ -189,6 +202,10 @@ public class EditTree {
 	 * quite similar with others. We keep this to show our process of individual
 	 * thinking.
 	 */
+	
+	 
+	//Below is our old methods, did not use null_node, which was super complex and had potential bugs.
+	
 	// public void add(char ch, int pos, Node current) throws
 	// IndexOutOfBoundsException {
 	//
@@ -429,8 +446,10 @@ public class EditTree {
 	 */
 	public char get(int pos) throws IndexOutOfBoundsException {
 		if (pos >= this.size() || pos < 0) {
+			
 			throw new IndexOutOfBoundsException();
 		}
+		//get each char of string.
 		return this.toString().charAt(pos);
 	}
 
@@ -440,6 +459,7 @@ public class EditTree {
 	 * @return the height of this tree
 	 */
 	public int height() {
+		//get the height of tree
 		if (this.root == NULL_NODE) {
 			return -1;
 		}
@@ -452,6 +472,7 @@ public class EditTree {
 	 * @return the number of nodes in this tree
 	 */
 	public int size() {
+		//We use slow version of size at this moment, will update it in Milestone2.
 		if (this.root == NULL_NODE) {
 			return 0;
 		}
@@ -609,6 +630,7 @@ public class EditTree {
 	}
 
 	class RefreshWrapper {
+		//wrapper class, containing two nodes and a boolean for height.
 		private Node current;
 		private Node child;
 		private Boolean bool;
