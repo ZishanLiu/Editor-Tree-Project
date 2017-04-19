@@ -35,7 +35,8 @@ public class Node {
 	Node parent;
 	DisplayableNodeWrapper wrap;
 	// Feel free to add other fields that you find useful
-	int numberOfRotation = 0;
+	int numberOfRotation = 0;// A field to count the number of rotations at the
+								// node
 	// You will probably want to add several other methods
 
 	// For the following methods, you should fill in the details so that they
@@ -65,6 +66,9 @@ public class Node {
 		return 1 + Math.max(left.height(), right.height());
 	}
 
+	/*
+	 * Use rank to implement size make it more efficient.
+	 */
 	public int size() {
 		if (this == EditTree.NULL_NODE) {
 			return 0;
@@ -72,6 +76,16 @@ public class Node {
 		return this.rank + right.size() + 1;
 	}
 
+	/**
+	 * This is our second add method. We get help from Yiyu Ma and Yuan Zhou. I
+	 * use NULL_NODE as the base case to avoid lots of situations of nullpointer
+	 * errors. I recurse into the node according to the rank, and refresh the
+	 * node's balance and rank. I do the needed rotations during refreshing. I
+	 * tried to use the parent field, but I actually did not use it to add. But
+	 * I think it might be helpful while doing delete method. So I keep it. I
+	 * use a Wrapper class to return both the node and the boolean to see if I
+	 * need to keep changing or not.
+	 */
 	public Wrapper add(char ch, int pos, Node parent) {
 		if (this == EditTree.NULL_NODE) {
 			Node add = new Node(ch);
@@ -82,7 +96,7 @@ public class Node {
 			this.rank++;
 			Wrapper temp = this.left.add(ch, pos, this.left);
 			this.left = temp.getNode();
-			Boolean bool = temp.heightChanged;
+			Boolean bool = temp.keepChanging;
 			if (!bool) {
 				return new Wrapper(this, false);
 			}
@@ -91,6 +105,7 @@ public class Node {
 				return new Wrapper(this, true);
 			} else if (this.balance == Code.RIGHT) {
 				this.balance = Code.SAME;
+				return new Wrapper(this, false);
 			} else if (this.balance == Code.LEFT) {
 				if (this.left.balance == Code.LEFT) {
 					Node output = this.singleRight(this);
@@ -107,7 +122,7 @@ public class Node {
 		} else {
 			Wrapper temp = this.right.add(ch, pos - this.rank - 1, this.right);
 			this.right = temp.getNode();
-			Boolean bool = temp.heightChanged;
+			Boolean bool = temp.keepChanging;
 			if (!bool) {
 				return new Wrapper(this, false);
 			}
@@ -116,6 +131,7 @@ public class Node {
 				return new Wrapper(this, true);
 			} else if (this.balance == Code.LEFT) {
 				this.balance = Code.SAME;
+				return new Wrapper(this, false);
 			} else if (this.balance == Code.RIGHT) {
 				if (this.right.balance == Code.RIGHT) {
 					Node output = this.singleLeft(this);
@@ -133,6 +149,9 @@ public class Node {
 		return new Wrapper(this, false);
 	}
 
+	/*
+	 * A recursion method to get the total rotation count.
+	 */
 	public int totalRotationCount() {
 		if (this == EditTree.NULL_NODE) {
 			return 0;
@@ -140,6 +159,9 @@ public class Node {
 		return this.numberOfRotation + left.totalRotationCount() + right.totalRotationCount();
 	}
 
+	/*
+	 * A easy way to getRank. Just used for debug. Same for many methods below.
+	 */
 	public int getRank() {
 		return left.size();
 	}
@@ -189,6 +211,11 @@ public class Node {
 		return this.balance;
 	}
 
+	/**
+	 * The four classes below are rotation classes. We deal with the position,
+	 * rank, balance code, rotation times and parent in the classes. We get the
+	 * relationship by draw picture by hand and deduct.
+	 */
 	public Node singleLeft(Node parent) {
 		Node child = parent.right;
 		child.rank = child.rank + parent.rank + 1;
@@ -283,15 +310,17 @@ public class Node {
 		return b;
 	}
 
+	/**
+	 * This is an inner class to wrap a node and a boolean together. Used for
+	 * return in add.
+	 */
 	class Wrapper {
 		private Node node;
-		private boolean heightChanged;
-		private int numberOfRotation;
+		private boolean keepChanging;
 
 		public Wrapper(Node node, boolean heightChanged) {
 			this.node = node;
-			this.heightChanged = heightChanged;
-			this.numberOfRotation = numberOfRotation;
+			this.keepChanging = heightChanged;
 		}
 
 		public Node getNode() {
