@@ -3,6 +3,7 @@ package editortrees;
 import java.util.ArrayList;
 import java.util.Stack;
 
+import editortrees.Node.DeleteWrapper;
 import editortrees.Node.Wrapper;
 
 // A height-balanced binary tree with rank that could be the basis for a text editor.
@@ -11,8 +12,6 @@ public class EditTree {
 
 	private DisplayableBinaryTree display;
 	private Node root;
-	
-	//Use NULL_NODE to avoid checking if node is null for too many situations.
 	public static final Node NULL_NODE = new Node();
 
 	/**
@@ -29,7 +28,6 @@ public class EditTree {
 	 * @param ch
 	 */
 	public EditTree(char ch) {
-		//
 		this.root = new Node(ch);
 		this.display = new DisplayableBinaryTree(this, 0, 0, false);
 	}
@@ -71,7 +69,6 @@ public class EditTree {
 	 */
 	@Override
 	public String toString() {
-		//build inorder toString
 		String result = "";
 		if (this.root == NULL_NODE) {
 			return result;
@@ -84,7 +81,6 @@ public class EditTree {
 	}
 
 	private ArrayList<Character> toInorderList(Node node) {
-		//simple inorder traversal
 		Stack<Node> stack = new Stack<Node>();
 		ArrayList<Character> result = new ArrayList<Character>();
 		Node temp = root;
@@ -121,7 +117,6 @@ public class EditTree {
 			return "[" + result + "]";
 		}
 		ArrayList<Node> a = toPreorderList(this.root);
-		//print out elements, ranks and balance codes for each node
 		for (Node ch : a) {
 			result += ch.element;
 			result += ch.rank + ch.balance.toString() + "," + " ";
@@ -130,7 +125,6 @@ public class EditTree {
 	}
 
 	private ArrayList<Node> toPreorderList(Node root) {
-		//simple preorder traversal
 		ArrayList<Node> returnList = new ArrayList<Node>();
 		if (root == NULL_NODE) {
 			return returnList;
@@ -166,9 +160,6 @@ public class EditTree {
 		// you!
 		// 2. Unit tests are cumulative, and many things are based on add(), so
 		// make sure that you get this one correct.
-		
-		//add with or without pos will use the same add method.
-		
 		add(ch, this.size());
 	}
 
@@ -184,257 +175,12 @@ public class EditTree {
 	 */
 	public void add(char ch, int pos) throws IndexOutOfBoundsException {
 		if (pos < 0 || pos > this.size()) {
-			//speical cases
 			throw new IndexOutOfBoundsException();
 		}
-		//use wrapper to keep the node.
-		//call add method in node.
 		Wrapper rootWrapper = this.root.add(ch, pos, this.root);
 		this.root = rootWrapper.getNode();
 
 	}
-
-	/**
-	 * This is our stupid, inefficient,with many code duplication, without using
-	 * NULL_NODE or recursion method. It is so ugly and fail to pass the
-	 * addManyRandom test. To make our life easier in the next milestones, we
-	 * wrote a new one using NULL_NODE and recursion. That method may seem to be
-	 * quite similar with others. We keep this to show our process of individual
-	 * thinking.
-	 */
-	
-	 
-	//Below is our old methods, did not use null_node, which was super complex and had potential bugs.
-	
-	// public void add(char ch, int pos, Node current) throws
-	// IndexOutOfBoundsException {
-	//
-	// if (pos <= current.rank) {
-	// current.rank++;
-	// if (current.left == NULL_NODE) {
-	// Node a = new Node(ch);
-	// current.left = a;
-	// current.left.parent = current;
-	// Node child = current.left;
-	// if (current.equals(this.root)) {
-	// refreshRoot(current, child);
-	// } else {
-	// RefreshWrapper temp = refresh(current, child);
-	// if (temp.bool == true) {
-	// child = temp.child;
-	// current = temp.current;
-	// refreshRoot(current, child);
-	// }
-	// }
-	// } else {
-	// current = current.left;
-	// add(ch, pos, current);
-	// }
-	// } else {
-	// if (current.right == NULL_NODE) {
-	// Node a = new Node(ch);
-	// current.right = a;
-	// current.right.parent = current;
-	// Node child = current.right;
-	// if (current.equals(this.root)) {
-	// refreshRoot(current, child);
-	// } else {
-	// RefreshWrapper temp = refresh(current, child);
-	// if (temp.bool == true) {
-	// child = temp.child;
-	// current = temp.current;
-	// refreshRoot(current, child);
-	// }
-	// }
-	// } else {
-	// int rootRank = current.rank;
-	// current = current.right;
-	// add(ch, pos - rootRank - 1, current);
-	// }
-	// }
-	// }
-	//
-	// public RefreshWrapper refresh(Node current, Node child) {
-	//
-	// while (current != this.root) {
-	//
-	// if (current.left != NULL_NODE) {
-	// if (current.left.equals(child)) {
-	// if (current.balance.equals(Code.LEFT)) {
-	// if (current.left.balance == Code.LEFT) {
-	// if (current.parent != NULL_NODE) {
-	// if (current.parent.left != NULL_NODE) {
-	// if (current.parent.left.equals(current)) {
-	// Node p = current.parent;
-	// current.parent.left = singleRight(current);
-	// p.left.parent = p;
-	// return new RefreshWrapper(current, child, true);
-	// }
-	// if (current.parent.right != NULL_NODE) {
-	// if (current.parent.right.equals(current)) {
-	// Node p = current.parent;
-	// current.parent.right = singleRight(current);
-	// p.right.parent = p;
-	// return new RefreshWrapper(current, child, true);
-	// }
-	// }
-	// }
-	// return new RefreshWrapper(current, child, false);
-	// } else {
-	// this.root = singleRight(current);
-	// return new RefreshWrapper(current, child, true);
-	// }
-	// } else if (current.left.balance == Code.RIGHT) {
-	// if (current.parent != NULL_NODE) {
-	// if (current.parent.left != NULL_NODE) {
-	// if (current.parent.left.equals(current)) {
-	// Node p = current.parent;
-	// current.parent.left = doubleRight(current);
-	// p.left.parent = p;
-	// return new RefreshWrapper(current, child, true);
-	// }
-	// if (current.parent.right != NULL_NODE) {
-	// if (current.parent.right.equals(current)) {
-	// Node p = current.parent;
-	// current.parent.right = doubleRight(current);
-	// p.right.parent = p;
-	// return new RefreshWrapper(current, child, true);
-	// }
-	// }
-	// }
-	// return new RefreshWrapper(current, child, false);
-	// } else {
-	// this.root = doubleRight(current);
-	// return new RefreshWrapper(current, child, true);
-	// }
-	// }
-	// return new RefreshWrapper(current, child, false);
-	// } else if (current.balance.equals(Code.SAME)) {
-	// if (current.left != null && current.right != NULL_NODE) {
-	// if (current.left.balance != Code.SAME || current.right.balance !=
-	// Code.SAME) {
-	// current.balance = Code.LEFT;
-	// }
-	// } else {
-	// current.balance = Code.LEFT;
-	// }
-	// } else {
-	// current.balance = Code.SAME;
-	// }
-	// }
-	// }
-	// if (current.right != NULL_NODE) {
-	// if (current.right.equals(child)) {
-	// if (current.balance.equals(Code.RIGHT)) {
-	// if (current.right.balance == Code.RIGHT) {
-	// if (current.parent != NULL_NODE) {
-	// if (current.parent.left != NULL_NODE) {
-	// if (current.parent.left.equals(current)) {
-	// Node p = current.parent;
-	// current.parent.left = singleLeft(current);
-	// p.left.parent = p;
-	// return new RefreshWrapper(current, child, true);
-	// }
-	// if (current.parent.right != NULL_NODE) {
-	// if (current.parent.right.equals(current)) {
-	// Node p = current.parent;
-	// current.parent.right = singleLeft(current);
-	// p.right.parent = p;
-	// return new RefreshWrapper(current, child, true);
-	// }
-	// }
-	// }
-	// return new RefreshWrapper(current, child, false);
-	// } else {
-	// this.root = singleLeft(current);
-	// return new RefreshWrapper(current, child, true);
-	// }
-	// } else if (current.right.balance == Code.LEFT) {
-	// if (current.parent != NULL_NODE) {
-	// if (current.parent.left != NULL_NODE) {
-	// if (current.parent.left.equals(current)) {
-	// Node p = current.parent;
-	// current.parent.left = doubleLeft(current);
-	// p.left.parent = p;
-	// }
-	// if (current.parent.right != NULL_NODE) {
-	// if (current.parent.right.equals(current)) {
-	// Node p = current.parent;
-	// current.parent.right = doubleLeft(current);
-	// p.right.parent = p;
-	// }
-	// }
-	// return new RefreshWrapper(current, child, true);
-	// } else {
-	// this.root = doubleLeft(current);
-	// return new RefreshWrapper(current, child, true);
-	// }
-	// }
-	// }
-	// return new RefreshWrapper(current, child, false);
-	// } else if (current.balance.equals(Code.SAME)) {
-	// if (current.left != null && current.right != NULL_NODE) {
-	// if (current.left.balance != Code.SAME || current.right.balance !=
-	// Code.SAME) {
-	// current.balance = Code.RIGHT;
-	// }
-	// } else {
-	// current.balance = Code.RIGHT;
-	// }
-	// } else {
-	// current.balance = Code.SAME;
-	// }
-	// }
-	// }
-	// child = current;
-	// current = current.parent;
-	// }
-	// return new RefreshWrapper(current, child, true);
-	// }
-	//
-	// public void refreshRoot(Node current, Node child) {
-	// if (current == this.root) {
-	// if (current.left != NULL_NODE) {
-	// if (current.left.equals(child)) {
-	// if (current.balance.equals(Code.LEFT)) {
-	// if (current.left.balance.equals(Code.LEFT)) {
-	// this.root = singleRight(current);
-	// } else if (current.left.balance.equals(Code.RIGHT)) {
-	// this.root = doubleRight(current);
-	// }
-	// return;
-	// } else if (current.balance.equals(Code.SAME)) {
-	// current.balance = Code.LEFT;
-	// } else if (current.balance.equals(Code.RIGHT)) {
-	// current.balance = Code.SAME;
-	// }
-	// }
-	// }
-	// if (current.right != NULL_NODE) {
-	// if (current.right.equals(child)) {
-	// if (current.balance.equals(Code.RIGHT)) {
-	// if (current.right.balance.equals(Code.RIGHT)) {
-	// this.root = singleLeft(current);
-	// } else if (current.right.balance.equals(Code.LEFT)) {
-	// this.root = doubleLeft(current);
-	// }
-	// return;
-	// } else if (current.balance.equals(Code.SAME)) {
-	// if (current.left != NULL_NODE && current.right != NULL_NODE) {
-	// if (current.left.balance != Code.SAME || current.right.balance !=
-	// Code.SAME) {
-	// current.balance = Code.RIGHT;
-	// }
-	// } else {
-	// current.balance = Code.RIGHT;
-	// }
-	// } else if (current.balance.equals(Code.LEFT)) {
-	// current.balance = Code.SAME;
-	// }
-	// }
-	// }
-	// }
-	// }
 
 	/**
 	 * MILESTONE 1
@@ -446,10 +192,8 @@ public class EditTree {
 	 */
 	public char get(int pos) throws IndexOutOfBoundsException {
 		if (pos >= this.size() || pos < 0) {
-			
 			throw new IndexOutOfBoundsException();
 		}
-		//get each char of string.
 		return this.toString().charAt(pos);
 	}
 
@@ -459,7 +203,6 @@ public class EditTree {
 	 * @return the height of this tree
 	 */
 	public int height() {
-		//get the height of tree
 		if (this.root == NULL_NODE) {
 			return -1;
 		}
@@ -472,7 +215,6 @@ public class EditTree {
 	 * @return the number of nodes in this tree
 	 */
 	public int size() {
-		//We use slow version of size at this moment, will update it in Milestone2.
 		if (this.root == NULL_NODE) {
 			return 0;
 		}
@@ -493,7 +235,12 @@ public class EditTree {
 		// node to be deleted with either its in-order successor or predecessor.
 		// The tests assume assume that you will replace it with the
 		// *successor*.
-		return '#'; // replace by a real calculation.
+		if (pos < 0 || pos > this.size() - 1) {
+			throw new IndexOutOfBoundsException();
+		}
+		DeleteWrapper output = this.root.delete(pos);
+		this.root = output.getReturnNode();
+		return output.getDeleteNode().element; // replace by a real calculation.
 	}
 
 	/**
@@ -626,19 +373,6 @@ public class EditTree {
 	public void close() {
 		if (this.display != null) {
 			this.display.close();
-		}
-	}
-
-	class RefreshWrapper {
-		//wrapper class, containing two nodes and a boolean for height.
-		private Node current;
-		private Node child;
-		private Boolean bool;
-
-		public RefreshWrapper(Node current, Node child, Boolean bool) {
-			this.current = current;
-			this.child = child;
-			this.bool = bool;
 		}
 	}
 
