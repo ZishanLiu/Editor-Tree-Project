@@ -94,7 +94,7 @@ public class Node {
 		}
 		if (pos <= this.rank) {
 			this.rank++;
-			Wrapper temp = this.left.add(ch, pos, this.left);
+			Wrapper temp = this.left.add(ch, pos, this);
 			this.left = temp.getNode();
 			Boolean bool = temp.keepChanging;
 			if (!bool) {
@@ -120,7 +120,7 @@ public class Node {
 				}
 			}
 		} else {
-			Wrapper temp = this.right.add(ch, pos - this.rank - 1, this.right);
+			Wrapper temp = this.right.add(ch, pos - this.rank - 1, this);
 			this.right = temp.getNode();
 			Boolean bool = temp.keepChanging;
 			if (!bool) {
@@ -260,13 +260,9 @@ public class Node {
 			c.balance = Code.SAME;
 		}
 		a.right = b.left;
-		if (a.right != EditTree.NULL_NODE) {
-			a.right.parent = a;
-		}
+		a.right.parent = a;
 		c.left = b.right;
-		if (c.left != EditTree.NULL_NODE) {
-			c.left.parent = c;
-		}
+		c.left.parent = c;
 		b.left = a;
 		a.parent = b;
 		b.right = c;
@@ -292,13 +288,9 @@ public class Node {
 			c.balance = Code.SAME;
 		}
 		a.left = b.right;
-		if (a.left != EditTree.NULL_NODE) {
-			a.left.parent = a;
-		}
+		a.left.parent = a;
 		c.right = b.left;
-		if (c.right != EditTree.NULL_NODE) {
-			c.right.parent = c;
-		}
+		c.right.parent = c;
 		b.right = a;
 		a.parent = b;
 		b.left = c;
@@ -308,6 +300,35 @@ public class Node {
 		b.balance = Code.SAME;
 		this.numberOfRotation += 2;
 		return b;
+	}
+
+	public DeleteWrapper delete(int pos) {
+		if (pos < this.rank) {
+			DeleteWrapper output = this.left.delete(pos);
+			this.left = output.retrunNode;
+			if (this.balance == Code.LEFT) {
+				this.balance = Code.SAME;
+			} else if (this.balance == Code.SAME) {
+				this.balance = Code.RIGHT;
+			} else {
+
+			}
+
+			return new DeleteWrapper(this, output.deleteNode);
+		} else if (pos > this.rank) {
+			DeleteWrapper output = this.right.delete(pos - this.rank - 1);
+			this.right = output.retrunNode;
+			if (this.balance == Code.RIGHT) {
+				this.balance = Code.SAME;
+			} else if (this.balance == Code.SAME) {
+				this.balance = Code.LEFT;
+			} else {
+
+			}
+			return new DeleteWrapper(this, output.deleteNode);
+		} else {
+			return new DeleteWrapper(EditTree.NULL_NODE, this);
+		}
 	}
 
 	/**
@@ -325,6 +346,24 @@ public class Node {
 
 		public Node getNode() {
 			return node;
+		}
+	}
+
+	class DeleteWrapper {
+		private Node retrunNode;
+		private Node deleteNode;
+
+		public DeleteWrapper(Node returnNode, Node deleteNode) {
+			this.retrunNode = returnNode;
+			this.deleteNode = deleteNode;
+		}
+
+		public Node getReturnNode() {
+			return this.retrunNode;
+		}
+
+		public Node getDeleteNode() {
+			return this.deleteNode;
 		}
 	}
 }
