@@ -311,7 +311,50 @@ public class Node {
 			} else if (this.balance == Code.SAME) {
 				this.balance = Code.RIGHT;
 			} else {
+				if (this.right != EditTree.NULL_NODE) {
+					if (this.left == EditTree.NULL_NODE) {
+						if (this.right.balance == Code.RIGHT) {
+							Node t = this.right;
+							if (t.right != EditTree.NULL_NODE) {
+								Node temp = this;
+								temp = singleLeft(this);
+							} else {
+								Node temp = this;
+								temp = doubleLeft(this);
+							}
+						}
+					} else {
+						Node t = this.left;
 
+						if (t.right != EditTree.NULL_NODE) {
+							if (this.balance == Code.LEFT) {
+								Node temp = t.left;
+								if (temp.left != EditTree.NULL_NODE) {
+
+									t = singleRight(t);
+								} else {
+
+									t = doubleRight(t);
+								}
+							}
+						} else {
+							if (this.balance == Code.SAME) {
+								Node temp = t.left;
+								if (temp.left != EditTree.NULL_NODE) {
+
+									t = singleRight(t);
+								} else {
+
+									t = doubleRight(t);
+								}
+							}
+						}
+						if (this.balance == Code.SAME) {
+
+							t = singleLeft(t);
+						}
+					}
+				}
 			}
 
 			return new DeleteWrapper(this, output.deleteNode);

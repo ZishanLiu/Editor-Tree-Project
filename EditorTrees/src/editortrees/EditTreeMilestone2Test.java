@@ -2838,6 +2838,7 @@ public class EditTreeMilestone2Test {
 		// We make use of the getRoot() method and its left and right children.
 		Node t3root = t3.getRoot();
 		Node t3originalRoot = t3s.getRoot();
+		
 		assertFalse(t3root == t3originalRoot);
 		assertFalse(t3root.left == t3originalRoot.left);
 		assertFalse(t3root.right.left == t3originalRoot.right.left);
