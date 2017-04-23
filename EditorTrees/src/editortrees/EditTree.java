@@ -15,6 +15,7 @@ public class EditTree {
 	private DisplayableBinaryTree display;
 	private Node root;
 	public static final Node NULL_NODE = new Node();
+	private int numberOfRotation = 0;
 
 	/**
 	 * MILESTONE 1 Construct an empty tree
@@ -41,9 +42,10 @@ public class EditTree {
 	 * @param e
 	 */
 	public EditTree(EditTree e) {
-		 
-		//Get the level order of e tree. If the tree is not a full tree, use node(0) to
-		//make it become "full". Call the add to finish this constructor.
+
+		// Get the level order of e tree. If the tree is not a full tree, use
+		// node(0) to
+		// make it become "full". Call the add to finish this constructor.
 		ArrayList<ArrayList<Character>> level = e.levelOrder(e.getRoot());
 		this.root = NULL_NODE;
 		for (int i = 0; i < level.size(); i++) {
@@ -60,7 +62,7 @@ public class EditTree {
 
 	}
 
-	//use queue to get the level order traversal of a tree.
+	// use queue to get the level order traversal of a tree.
 	public ArrayList<ArrayList<Character>> levelOrder(Node root) {
 		ArrayList result = new ArrayList();
 
@@ -115,7 +117,7 @@ public class EditTree {
 	 * @return number of rotations since tree was created.
 	 */
 	public int totalRotationCount() {
-		return root.totalRotationCount(); // replace by a real calculation.
+		return root.totalRotationCount() + this.numberOfRotation;
 	}
 
 	/**
@@ -312,6 +314,7 @@ public class EditTree {
 		}
 		DeleteWrapper output = this.root.delete(pos);
 		this.root = output.getReturnNode();
+		this.numberOfRotation += output.getDeleteNode().numberOfRotation;
 		return output.getDeleteNode().element; // replace by a real calculation.
 	}
 
