@@ -1,6 +1,8 @@
 package editortrees;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Stack;
 
 import editortrees.Node.DeleteWrapper;
@@ -39,7 +41,103 @@ public class EditTree {
 	 * @param e
 	 */
 	public EditTree(EditTree e) {
+		// String result = e.toString();
+		// this.root = NULL_NODE;
+		// for (int i = 0; i < result.length(); i++) {
+		// Wrapper rootWrapper = this.root.add(result.charAt(i), i, this.root);
+		// this.root = rootWrapper.getNode();
+		// }
+		String in = e.toString();
+		System.out.println(e.levelOrder(e.getRoot()));
+		ArrayList<ArrayList<Character>> level = e.levelOrder(e.getRoot());
+		this.root = NULL_NODE;
+		for (int i = 0; i < level.size(); i++) {
+			int k = 0;
+			for (int j = 0; j < level.get(i).size(); j++) {
+				if (level.get(i).get(j) != '0') {
+					Wrapper rootWrapper = this.root.add(level.get(i).get(j), 2 * j - k, this.root);
+					this.root = rootWrapper.getNode();
+				} else {
+					k++;
+				}
+			}
+		}
 
+	}
+
+	// Node buildTree(String in, String level) {
+	// Node startnode = NULL_NODE;
+	// return constructTree(startnode, level, in, 0, in.length() - 1);
+	// }
+	//
+	// Node constructTree(Node startNode, String level, String in, int inStart,
+	// int inEnd) {
+	//
+	// if (inStart > inEnd)
+	// return NULL_NODE;
+	//
+	// if (inStart == inEnd)
+	// return new Node(in.charAt(inStart));
+	//
+	// boolean found = false;
+	// int index = 0;
+	//
+	// for (int i = 0; i < level.length() - 1; i++) {
+	// char data = level.charAt(i);
+	// for (int j = inStart; j < inEnd; j++) {
+	// if (data == in.charAt(j)) {
+	// startNode = new Node(data);
+	// index = j;
+	// found = true;
+	// break;
+	// }
+	// }
+	// if (found == true)
+	// break;
+	// }
+	//
+	// startNode.left = (constructTree(startNode, level, in, inStart, index -
+	// 1));
+	// startNode.right = (constructTree(startNode, level, in, index + 1,
+	// inEnd));
+	//
+	// return startNode;
+	// }
+
+	public ArrayList<ArrayList<Character>> levelOrder(Node root) {
+		ArrayList result = new ArrayList();
+
+		if (root == NULL_NODE) {
+			return result;
+		}
+
+		Queue<Node> queue = new LinkedList<Node>();
+		queue.offer(root);
+
+		while (!queue.isEmpty()) {
+			ArrayList<Character> level = new ArrayList<Character>();
+			int size = queue.size();
+			for (int i = 0; i < size; i++) {
+				Node head = queue.poll();
+
+				level.add(head.element);
+				if (head.element != '0') {
+					if (head.left != NULL_NODE) {
+						queue.offer(head.left);
+					} else {
+						queue.offer(new Node('0'));
+					}
+					if (head.right != NULL_NODE) {
+						queue.offer(head.right);
+					} else {
+						queue.offer(new Node('0'));
+					}
+				}
+			}
+			result.add(level);
+		}
+
+		return result;
 	}
 
 	/**
@@ -92,6 +190,23 @@ public class EditTree {
 			temp = stack.peek();
 			stack.pop();
 			result.add(temp.element);
+			temp = temp.right;
+		}
+		return result;
+	}
+
+	private ArrayList<Node> toInorderListNode(Node node) {
+		Stack<Node> stack = new Stack<Node>();
+		ArrayList<Node> result = new ArrayList<Node>();
+		Node temp = root;
+		while (temp != NULL_NODE || !stack.empty()) {
+			while (temp != NULL_NODE) {
+				stack.add(temp);
+				temp = temp.left;
+			}
+			temp = stack.peek();
+			stack.pop();
+			result.add(temp);
 			temp = temp.right;
 		}
 		return result;
