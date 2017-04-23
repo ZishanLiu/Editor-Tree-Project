@@ -41,14 +41,9 @@ public class EditTree {
 	 * @param e
 	 */
 	public EditTree(EditTree e) {
-		// String result = e.toString();
-		// this.root = NULL_NODE;
-		// for (int i = 0; i < result.length(); i++) {
-		// Wrapper rootWrapper = this.root.add(result.charAt(i), i, this.root);
-		// this.root = rootWrapper.getNode();
-		// }
-		String in = e.toString();
-		System.out.println(e.levelOrder(e.getRoot()));
+		 
+		//Get the level order of e tree. If the tree is not a full tree, use node(0) to
+		//make it become "full". Call the add to finish this constructor.
 		ArrayList<ArrayList<Character>> level = e.levelOrder(e.getRoot());
 		this.root = NULL_NODE;
 		for (int i = 0; i < level.size(); i++) {
@@ -65,45 +60,7 @@ public class EditTree {
 
 	}
 
-	// Node buildTree(String in, String level) {
-	// Node startnode = NULL_NODE;
-	// return constructTree(startnode, level, in, 0, in.length() - 1);
-	// }
-	//
-	// Node constructTree(Node startNode, String level, String in, int inStart,
-	// int inEnd) {
-	//
-	// if (inStart > inEnd)
-	// return NULL_NODE;
-	//
-	// if (inStart == inEnd)
-	// return new Node(in.charAt(inStart));
-	//
-	// boolean found = false;
-	// int index = 0;
-	//
-	// for (int i = 0; i < level.length() - 1; i++) {
-	// char data = level.charAt(i);
-	// for (int j = inStart; j < inEnd; j++) {
-	// if (data == in.charAt(j)) {
-	// startNode = new Node(data);
-	// index = j;
-	// found = true;
-	// break;
-	// }
-	// }
-	// if (found == true)
-	// break;
-	// }
-	//
-	// startNode.left = (constructTree(startNode, level, in, inStart, index -
-	// 1));
-	// startNode.right = (constructTree(startNode, level, in, index + 1,
-	// inEnd));
-	//
-	// return startNode;
-	// }
-
+	//use queue to get the level order traversal of a tree.
 	public ArrayList<ArrayList<Character>> levelOrder(Node root) {
 		ArrayList result = new ArrayList();
 
