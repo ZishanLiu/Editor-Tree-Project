@@ -307,6 +307,7 @@ public class Node {
 			this.rank--;
 			DeleteWrapper output = this.left.delete(pos);
 			this.left = output.retrunNode;
+			output.retrunNode.parent = this;
 			if (!output.keepChanging) {
 				return new DeleteWrapper(this, output.deleteNode, false);
 			}
@@ -333,6 +334,7 @@ public class Node {
 		} else if (pos > this.rank) {
 			DeleteWrapper output = this.right.delete(pos - this.rank - 1);
 			this.right = output.retrunNode;
+			output.retrunNode.parent = this;
 			if (!output.keepChanging) {
 				return new DeleteWrapper(this, output.deleteNode, false);
 			}
@@ -357,7 +359,34 @@ public class Node {
 				}
 			}
 		} else {
-			return new DeleteWrapper(EditTree.NULL_NODE, this, true);
+			if (this.left == EditTree.NULL_NODE && this.right == EditTree.NULL_NODE) {
+				return new DeleteWrapper(EditTree.NULL_NODE, this, true);
+			} else if (this.left == EditTree.NULL_NODE) {
+				return new DeleteWrapper(this.right, this, true);
+			} else if (this.right == EditTree.NULL_NODE) {
+				return new DeleteWrapper(this.left, this, true);
+			} else {
+				Node deleteNode = this.right;
+				while (deleteNode.left != EditTree.NULL_NODE) {
+					deleteNode.rank--;
+					deleteNode = deleteNode.left;
+					if (deleteNode.left == EditTree.NULL_NODE) {
+						deleteNode.parent.left = EditTree.NULL_NODE;
+					}
+				}
+				deleteNode.left = this.left;
+				this.left.parent = deleteNode;
+				deleteNode.rank = this.rank;
+				deleteNode.parent = EditTree.NULL_NODE;
+				if (!deleteNode.equals(this.right)) {
+					deleteNode.right = this.right;
+					this.right.parent = deleteNode;
+					return new DeleteWrapper(deleteNode, this, true);
+				} else {
+					deleteNode.balance = Code.LEFT;
+					return new DeleteWrapper(deleteNode, this, false);
+				}
+			}
 		}
 	}
 
