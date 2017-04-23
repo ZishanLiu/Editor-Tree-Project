@@ -367,11 +367,40 @@ public class Node {
 				return new DeleteWrapper(this.left, this, true);
 			} else {
 				Node deleteNode = this.right;
+				Node refreshNode = deleteNode;
 				while (deleteNode.left != EditTree.NULL_NODE) {
 					deleteNode.rank--;
 					deleteNode = deleteNode.left;
 					if (deleteNode.left == EditTree.NULL_NODE) {
+						refreshNode = deleteNode;
 						deleteNode.parent.left = EditTree.NULL_NODE;
+					}
+				}
+				while (!refreshNode.equals(this.right)) {
+					if (refreshNode.parent.balance == Code.SAME) {
+						refreshNode.parent.balance = Code.RIGHT;
+						Node refreshParent = refreshNode.parent;
+						if (refreshNode.equals(deleteNode)) {
+							refreshParent.left = EditTree.NULL_NODE;
+						}
+						refreshNode = refreshParent;
+						break;
+					} else if (refreshNode.parent.balance == Code.LEFT) {
+						refreshNode.parent.balance = Code.SAME;
+						Node refreshParent = refreshNode.parent;
+						if (refreshNode.equals(deleteNode)) {
+							refreshParent.left = EditTree.NULL_NODE;
+						}
+						refreshNode = refreshParent;
+					} else {
+						Node refreshParent = refreshNode.parent;
+						if (refreshNode.right.balance == Code.RIGHT) {
+							refreshNode = singleLeft(refreshNode);
+						} else if (refreshNode.right.balance == Code.LEFT) {
+							refreshNode = doubleLeft(refreshNode);
+						}
+						refreshNode.parent = refreshParent;
+						refreshNode = refreshParent;
 					}
 				}
 				deleteNode.left = this.left;
@@ -379,11 +408,27 @@ public class Node {
 				deleteNode.rank = this.rank;
 				deleteNode.parent = EditTree.NULL_NODE;
 				if (!deleteNode.equals(this.right)) {
-					deleteNode.right = this.right;
+					deleteNode.right = refreshNode;
 					this.right.parent = deleteNode;
-					return new DeleteWrapper(deleteNode, this, true);
+					if (this.balance == Code.SAME) {
+						return new DeleteWrapper(deleteNode, this, false);
+					} else {
+						return new DeleteWrapper(deleteNode, this, true);
+					}
 				} else {
 					deleteNode.balance = Code.LEFT;
+					if (this.balance == Code.LEFT) {
+						if (this.left.balance == Code.LEFT) {
+							deleteNode = singleRight(deleteNode);
+						} else if (this.left.balance == Code.RIGHT) {
+							deleteNode = doubleRight(deleteNode);
+						}
+						if (this.balance == Code.SAME) {
+							return new DeleteWrapper(deleteNode, this, false);
+						} else {
+							return new DeleteWrapper(deleteNode, this, true);
+						}
+					}
 					return new DeleteWrapper(deleteNode, this, false);
 				}
 			}
