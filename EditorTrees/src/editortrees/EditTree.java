@@ -42,23 +42,14 @@ public class EditTree {
 	 * @param e
 	 */
 	public EditTree(EditTree e) {
-
-		// Get the level order of e tree. If the tree is not a full tree, use
-		// node(0) to
-		// make it become "full". Call the add to finish this constructor.
-		ArrayList<ArrayList<Character>> level = e.levelOrder(e.getRoot());
-		this.root = NULL_NODE;
-		for (int i = 0; i < level.size(); i++) {
-			int k = 0;
-			for (int j = 0; j < level.get(i).size(); j++) {
-				if (level.get(i).get(j) != '0') {
-					Wrapper rootWrapper = this.root.add(level.get(i).get(j), 2 * j - k, this.root);
-					this.root = rootWrapper.getNode();
-				} else {
-					k++;
-				}
-			}
+		// make a clone of the whole tree e.
+		// Basically, we make a new node each time, and copy all the infomation
+		// from node in e.
+		if (e.size() == 0) {
+			this.root = NULL_NODE;
 		}
+		Node temp = e.getRoot().copy();
+		this.root = temp;
 
 	}
 

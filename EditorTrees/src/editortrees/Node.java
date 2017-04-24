@@ -43,8 +43,8 @@ public class Node {
 	// work correctly
 	public Node() {
 		this.element = '\0';
-		this.left = null;
-		this.right = null;
+		this.left = EditTree.NULL_NODE;
+		this.right = EditTree.NULL_NODE;
 		this.rank = 0;
 		this.balance = Code.SAME;
 		this.wrap = new DisplayableNodeWrapper(this);
@@ -516,5 +516,20 @@ public class Node {
 		public Node getDeleteNode() {
 			return this.deleteNode;
 		}
+	}
+
+	public Node copy() {
+		// use recursion to copy nodes.
+		if (this == EditTree.NULL_NODE) {
+
+			return EditTree.NULL_NODE;
+		}
+		Node temp = new Node();
+		temp.left = this.left.copy();
+		temp.right = this.right.copy();
+		temp.element = this.element;
+		temp.rank = this.rank;
+		temp.balance = this.getBalance();
+		return temp;
 	}
 }
