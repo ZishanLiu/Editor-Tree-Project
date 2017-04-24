@@ -410,7 +410,7 @@ public class Node {
 				}
 				
 				d.parent=dParent;
-				return new DeleteWrapper(d, this, true);
+				return new DeleteWrapper(d, this, temp.keepChanging);
 			}
 		}
 	}
