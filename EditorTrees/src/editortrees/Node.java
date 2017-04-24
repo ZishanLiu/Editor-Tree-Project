@@ -366,74 +366,155 @@ public class Node {
 			} else if (this.right == EditTree.NULL_NODE) {
 				return new DeleteWrapper(this.left, this, true);
 			} else {
-				Node deleteNode = this.right;
-				Node refreshNode = deleteNode;
-				while (deleteNode.left != EditTree.NULL_NODE) {
-					deleteNode.rank--;
-					deleteNode = deleteNode.left;
-					if (deleteNode.left == EditTree.NULL_NODE) {
-						refreshNode = deleteNode;
-						deleteNode.parent.left = EditTree.NULL_NODE;
-					}
-				}
-				while (!refreshNode.equals(this.right)) {
-					if (refreshNode.parent.balance == Code.SAME) {
-						refreshNode.parent.balance = Code.RIGHT;
-						Node refreshParent = refreshNode.parent;
-						if (refreshNode.equals(deleteNode)) {
-							refreshParent.left = EditTree.NULL_NODE;
-						}
-						refreshNode = refreshParent;
-						break;
-					} else if (refreshNode.parent.balance == Code.LEFT) {
-						refreshNode.parent.balance = Code.SAME;
-						Node refreshParent = refreshNode.parent;
-						if (refreshNode.equals(deleteNode)) {
-							refreshParent.left = EditTree.NULL_NODE;
-						}
-						refreshNode = refreshParent;
-					} else {
-						Node refreshParent = refreshNode.parent;
-						if (refreshNode.right.balance == Code.RIGHT) {
-							refreshNode = singleLeft(refreshNode);
-						} else if (refreshNode.right.balance == Code.LEFT) {
-							refreshNode = doubleLeft(refreshNode);
-						}
-						refreshNode.parent = refreshParent;
-						refreshNode = refreshParent;
-					}
-				}
-				deleteNode.left = this.left;
-				this.left.parent = deleteNode;
-				deleteNode.rank = this.rank;
-				deleteNode.parent = EditTree.NULL_NODE;
-				if (!deleteNode.equals(this.right)) {
-					deleteNode.right = refreshNode;
-					this.right.parent = deleteNode;
-					if (this.balance == Code.SAME) {
-						return new DeleteWrapper(deleteNode, this, false);
-					} else {
-						return new DeleteWrapper(deleteNode, this, true);
-					}
+				DeleteWrapper temp = this.right.delete(0);
+				this.right=temp.retrunNode;
+				Node d = temp.deleteNode;
+				d.parent = EditTree.NULL_NODE;
+				d.left = this.left;
+				if (d.equals(this.right)) {
+					d.right = this.right.right;
 				} else {
-					deleteNode.balance = Code.LEFT;
-					if (this.balance == Code.LEFT) {
-						if (this.left.balance == Code.LEFT) {
-							deleteNode = singleRight(deleteNode);
-						} else if (this.left.balance == Code.RIGHT) {
-							deleteNode = doubleRight(deleteNode);
-						}
-						if (this.balance == Code.SAME) {
-							return new DeleteWrapper(deleteNode, this, false);
-						} else {
-							return new DeleteWrapper(deleteNode, this, true);
-						}
-					}
-					return new DeleteWrapper(deleteNode, this, false);
+					d.right = this.right;
 				}
+				d.rank = this.rank;
+				int l=d.left.height();
+				int r=d.right.height();
+				Node dParent=d.parent;
+				if (l-r==1){
+					d.balance=Code.LEFT;
+					if (this.balance==Code.SAME){
+						d.parent=dParent;
+						return new DeleteWrapper(d, this, false);
+					}
+				}else if (r-l==1){
+					d.balance=Code.RIGHT;
+					if (this.balance==Code.SAME){
+						d.parent=dParent;
+						return new DeleteWrapper(d, this, false);
+					}
+				}else if (r==l){
+					d.balance=Code.SAME;
+				}else if (l-r==2){
+					if (d.left.balance==Code.LEFT){
+						d=singleRight(d);
+						
+					}else if (d.left.balance==Code.RIGHT){
+						d=doubleRight(d);
+					}
+				}else if (r-l==2){
+					if (d.right.balance==Code.RIGHT){
+						d=singleLeft(d);
+					}else if (d.right.balance==Code.LEFT){
+						d=doubleLeft(d);
+					}
+				}
+				
+				d.parent=dParent;
+				return new DeleteWrapper(d, this, true);
 			}
 		}
 	}
+		
+		
+		
+		
+		
+		
+//		Node deleteNode = this.right;
+//		Node refreshNode = deleteNode;
+//		while (deleteNode.left != EditTree.NULL_NODE) {
+//			deleteNode.rank--;
+//			deleteNode = deleteNode.left;
+//			if (deleteNode.left == EditTree.NULL_NODE) {
+//				refreshNode = deleteNode;
+//				deleteNode.parent.left = EditTree.NULL_NODE;
+//			}
+//		}
+//		while (!refreshNode.equals(this.right)) {
+//			if (refreshNode.parent.balance == Code.SAME) {
+//				refreshNode.parent.balance = Code.RIGHT;
+//				Node refreshParent = refreshNode.parent;
+//				if (refreshNode.equals(deleteNode)) {
+//					refreshParent.left = EditTree.NULL_NODE;
+//				}
+//				refreshNode = refreshParent;
+//				break;
+//			} else if (refreshNode.parent.balance == Code.LEFT) {
+//				refreshNode.parent.balance = Code.SAME;
+//				Node refreshParent = refreshNode.parent;
+//				if (refreshNode.equals(deleteNode)) {
+//					refreshParent.left = EditTree.NULL_NODE;
+//				}
+//				refreshNode = refreshParent;
+//			} else {
+//				Node refreshParent = refreshNode.parent;
+//				if (refreshNode.right.balance == Code.RIGHT) {
+//					refreshNode = singleLeft(refreshNode);
+//				} else if (refreshNode.right.balance == Code.LEFT) {
+//					refreshNode = doubleLeft(refreshNode);
+//				}
+//				refreshNode.parent = refreshParent;
+//				refreshNode = refreshParent;
+//			}
+//		}
+//		deleteNode.left = this.left;
+//		this.left.parent = deleteNode;
+//		deleteNode.rank = this.rank;
+//		deleteNode.parent = EditTree.NULL_NODE;
+//		if (!deleteNode.equals(this.right)) {
+//			deleteNode.right = refreshNode;
+//			this.right.parent = deleteNode;
+//			if (this.balance == Code.SAME) {
+//				return new DeleteWrapper(deleteNode, this, false);
+//			} else {
+//				return new DeleteWrapper(deleteNode, this, true);
+//			}
+//		} else {
+//			deleteNode.balance = Code.LEFT;
+//			if (this.balance == Code.LEFT) {
+//				if (this.left.balance == Code.LEFT) {
+//					deleteNode = singleRight(deleteNode);
+//				} else if (this.left.balance == Code.RIGHT) {
+//					deleteNode = doubleRight(deleteNode);
+//				}
+//				if (this.balance == Code.SAME) {
+//					return new DeleteWrapper(deleteNode, this, false);
+//				} else {
+//					return new DeleteWrapper(deleteNode, this, true);
+//				}
+//			}
+//			return new DeleteWrapper(deleteNode, this, false);
+//		}
+//	}
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 
 	// if (this.right != EditTree.NULL_NODE) {
 	// if (this.left == EditTree.NULL_NODE) {
