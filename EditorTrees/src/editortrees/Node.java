@@ -226,8 +226,13 @@ public class Node {
 		child.left = parent;
 		parent.parent = child;
 		this.numberOfRotation++;
-		child.balance = Code.SAME;
-		parent.balance = Code.SAME;
+		if (child.balance == Code.SAME) {
+			child.balance = Code.LEFT;
+			parent.balance = Code.RIGHT;
+		} else {
+			child.balance = Code.SAME;
+			parent.balance = Code.SAME;
+		}
 		return child;
 	}
 
@@ -241,8 +246,13 @@ public class Node {
 		child.right = parent;
 		parent.parent = child;
 		this.numberOfRotation++;
-		child.balance = Code.SAME;
-		parent.balance = Code.SAME;
+		if (child.balance == Code.SAME) {
+			child.balance = Code.RIGHT;
+			parent.balance = Code.LEFT;
+		} else {
+			child.balance = Code.SAME;
+			parent.balance = Code.SAME;
+		}
 		return child;
 	}
 
@@ -328,7 +338,9 @@ public class Node {
 					rotateNode.parent = thisParent;
 					return new DeleteWrapper(rotateNode, output.deleteNode, true);
 				} else {
-					return new DeleteWrapper(this, output.deleteNode, true);
+					Node rotateNode = singleLeft(this);
+					rotateNode.parent = thisParent;
+					return new DeleteWrapper(rotateNode, output.deleteNode, false);
 				}
 			}
 		} else if (pos > this.rank) {
@@ -355,7 +367,9 @@ public class Node {
 					rotateNode.parent = thisParent;
 					return new DeleteWrapper(rotateNode, output.deleteNode, true);
 				} else {
-					return new DeleteWrapper(this, output.deleteNode, true);
+					Node rotateNode = singleRight(this);
+					rotateNode.parent = thisParent;
+					return new DeleteWrapper(rotateNode, output.deleteNode, false);
 				}
 			}
 		} else {
@@ -367,7 +381,7 @@ public class Node {
 				return new DeleteWrapper(this.left, this, true);
 			} else {
 				DeleteWrapper temp = this.right.delete(0);
-				this.right=temp.retrunNode;
+				this.right = temp.retrunNode;
 				Node d = temp.deleteNode;
 				d.parent = EditTree.NULL_NODE;
 				d.left = this.left;
@@ -377,189 +391,43 @@ public class Node {
 					d.right = this.right;
 				}
 				d.rank = this.rank;
-				int l=d.left.height();
-				int r=d.right.height();
-				Node dParent=d.parent;
-				if (l-r==1){
-					d.balance=Code.LEFT;
-					if (this.balance==Code.SAME){
-						d.parent=dParent;
+				int l = d.left.height();
+				int r = d.right.height();
+				Node dParent = d.parent;
+				if (l - r == 1) {
+					d.balance = Code.LEFT;
+					if (this.balance == Code.SAME) {
+						d.parent = dParent;
 						return new DeleteWrapper(d, this, false);
 					}
-				}else if (r-l==1){
-					d.balance=Code.RIGHT;
-					if (this.balance==Code.SAME){
-						d.parent=dParent;
+				} else if (r - l == 1) {
+					d.balance = Code.RIGHT;
+					if (this.balance == Code.SAME) {
+						d.parent = dParent;
 						return new DeleteWrapper(d, this, false);
 					}
-				}else if (r==l){
-					d.balance=Code.SAME;
-				}else if (l-r==2){
-					if (d.left.balance==Code.LEFT){
-						d=singleRight(d);
-						
-					}else if (d.left.balance==Code.RIGHT){
-						d=doubleRight(d);
+				} else if (r == l) {
+					d.balance = Code.SAME;
+				} else if (l - r == 2) {
+					if (d.left.balance == Code.LEFT) {
+						d = singleRight(d);
+
+					} else if (d.left.balance == Code.RIGHT) {
+						d = doubleRight(d);
 					}
-				}else if (r-l==2){
-					if (d.right.balance==Code.RIGHT){
-						d=singleLeft(d);
-					}else if (d.right.balance==Code.LEFT){
-						d=doubleLeft(d);
+				} else if (r - l == 2) {
+					if (d.right.balance == Code.RIGHT) {
+						d = singleLeft(d);
+					} else if (d.right.balance == Code.LEFT) {
+						d = doubleLeft(d);
 					}
 				}
-				
-				d.parent=dParent;
+
+				d.parent = dParent;
 				return new DeleteWrapper(d, this, temp.keepChanging);
 			}
 		}
 	}
-		
-		
-		
-		
-		
-		
-//		Node deleteNode = this.right;
-//		Node refreshNode = deleteNode;
-//		while (deleteNode.left != EditTree.NULL_NODE) {
-//			deleteNode.rank--;
-//			deleteNode = deleteNode.left;
-//			if (deleteNode.left == EditTree.NULL_NODE) {
-//				refreshNode = deleteNode;
-//				deleteNode.parent.left = EditTree.NULL_NODE;
-//			}
-//		}
-//		while (!refreshNode.equals(this.right)) {
-//			if (refreshNode.parent.balance == Code.SAME) {
-//				refreshNode.parent.balance = Code.RIGHT;
-//				Node refreshParent = refreshNode.parent;
-//				if (refreshNode.equals(deleteNode)) {
-//					refreshParent.left = EditTree.NULL_NODE;
-//				}
-//				refreshNode = refreshParent;
-//				break;
-//			} else if (refreshNode.parent.balance == Code.LEFT) {
-//				refreshNode.parent.balance = Code.SAME;
-//				Node refreshParent = refreshNode.parent;
-//				if (refreshNode.equals(deleteNode)) {
-//					refreshParent.left = EditTree.NULL_NODE;
-//				}
-//				refreshNode = refreshParent;
-//			} else {
-//				Node refreshParent = refreshNode.parent;
-//				if (refreshNode.right.balance == Code.RIGHT) {
-//					refreshNode = singleLeft(refreshNode);
-//				} else if (refreshNode.right.balance == Code.LEFT) {
-//					refreshNode = doubleLeft(refreshNode);
-//				}
-//				refreshNode.parent = refreshParent;
-//				refreshNode = refreshParent;
-//			}
-//		}
-//		deleteNode.left = this.left;
-//		this.left.parent = deleteNode;
-//		deleteNode.rank = this.rank;
-//		deleteNode.parent = EditTree.NULL_NODE;
-//		if (!deleteNode.equals(this.right)) {
-//			deleteNode.right = refreshNode;
-//			this.right.parent = deleteNode;
-//			if (this.balance == Code.SAME) {
-//				return new DeleteWrapper(deleteNode, this, false);
-//			} else {
-//				return new DeleteWrapper(deleteNode, this, true);
-//			}
-//		} else {
-//			deleteNode.balance = Code.LEFT;
-//			if (this.balance == Code.LEFT) {
-//				if (this.left.balance == Code.LEFT) {
-//					deleteNode = singleRight(deleteNode);
-//				} else if (this.left.balance == Code.RIGHT) {
-//					deleteNode = doubleRight(deleteNode);
-//				}
-//				if (this.balance == Code.SAME) {
-//					return new DeleteWrapper(deleteNode, this, false);
-//				} else {
-//					return new DeleteWrapper(deleteNode, this, true);
-//				}
-//			}
-//			return new DeleteWrapper(deleteNode, this, false);
-//		}
-//	}
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-
-	// if (this.right != EditTree.NULL_NODE) {
-	// if (this.left == EditTree.NULL_NODE) {
-	// if (this.right.balance == Code.RIGHT) {
-	// Node t = this.right;
-	// if (t.right != EditTree.NULL_NODE) {
-	// Node temp = this;
-	// temp = singleLeft(this);
-	// } else {
-	// Node temp = this;
-	// temp = doubleLeft(this);
-	// }
-	// }
-	// } else {
-	// Node t = this.left;
-	// if (t.right != EditTree.NULL_NODE) {
-	// if (this.balance == Code.LEFT) {
-	// Node temp = t.left;
-	// if (temp.left != EditTree.NULL_NODE) {
-	//
-	// t = singleRight(t);
-	// } else {
-	//
-	// t = doubleRight(t);
-	// }
-	// }
-	// } else {
-	// if (this.balance == Code.SAME) {
-	// Node temp = t.left;
-	// if (temp.left != EditTree.NULL_NODE) {
-	//
-	// t = singleRight(t);
-	// } else {
-	//
-	// t = doubleRight(t);
-	// }
-	// }
-	// }
-	// if (this.balance == Code.SAME) {
-	//
-	// t = singleLeft(t);
-	// }
-	// }
-	// }
-	// }
 
 	/**
 	 * This is an inner class to wrap a node and a boolean together. Used for
