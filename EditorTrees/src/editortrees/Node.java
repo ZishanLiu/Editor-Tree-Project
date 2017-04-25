@@ -311,7 +311,11 @@ public class Node {
 		this.numberOfRotation += 2;
 		return b;
 	}
-	
+	/*
+	 * This is our delete method. By using delete itself when we facing root, we simplify lots of work.
+	 * It is similar to adding method. Find the node we need to delete, and update its infomation, and Check if we
+	 * need to do different rotations.
+	 */
 	public DeleteWrapper delete(int pos) {
 		//update rank, keep tracking until we find the node we delete.
 		if (pos < this.rank) {
