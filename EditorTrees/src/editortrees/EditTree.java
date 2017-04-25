@@ -305,6 +305,7 @@ public class EditTree {
 		}
 		DeleteWrapper output = this.root.delete(pos);
 		this.root = output.getReturnNode();
+		//get the number of rotation from nodes that we delete in case we lost their info.
 		this.numberOfRotation += output.getDeleteNode().numberOfRotation;
 		return output.getDeleteNode().element; // replace by a real calculation.
 	}
