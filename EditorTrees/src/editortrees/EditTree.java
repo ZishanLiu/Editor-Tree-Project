@@ -402,29 +402,7 @@ public class EditTree {
 	 *         does not occur
 	 */
 	public int find(String s) {
-
-		if ((this.size() == 0 && s.equals("")) || (s.equals(""))) {
-			return 0;
-		}
-
-		boolean valid = false;
-		String temp = this.toString();
-		// for (int i = 0; i < temp.length()-s.length(); i++) {
-		// if (temp.substring(i, s.length()).equals(s)) {
-		// valid = true;
-		// }
-		// }
-
-		if (temp.length() <= s.length()) {
-			for (int i = 0; i < s.length(); i++) {
-				for (int j = 0; j < temp.length(); j++) {
-					if (s.substring(i, i + temp.length()).equals(temp)) {
-						return i;
-					}
-				}
-			}
-		}
-		return -1;
+		return find(s, 0);
 	}
 
 	/**
@@ -441,14 +419,11 @@ public class EditTree {
 		if ((this.size() == 0 && s.equals("")) || (s.equals(""))) {
 			return 0;
 		}
-		String temp = this.toString();
-		if (temp.length() <= s.length()) {
-
-			for (int i = 0; i < s.length(); i++) {
-				for (int j = pos; j < temp.length(); j++) {
-					if (s.charAt(i) == temp.charAt(j)) {
-						return temp.indexOf(temp.charAt(j));
-					}
+		String temp = this.toString().substring(pos);
+		if (temp.length() >= s.length()) {
+			for (int i = 0; i < temp.length() - s.length() + 1; i++) {
+				if (temp.substring(i, i + s.length()).equals(s)) {
+					return i + pos;
 				}
 			}
 		}
