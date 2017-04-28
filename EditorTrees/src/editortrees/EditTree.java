@@ -328,7 +328,18 @@ public class EditTree {
 	 *             within this tree.
 	 */
 	public String get(int pos, int length) throws IndexOutOfBoundsException {
-		return "";
+		String temp = this.toString();
+		
+		if(pos > temp.length() || (pos+length-1)>temp.length()){
+			throw new IndexOutOfBoundsException();
+		}
+		
+		if(length == temp.length() -1){
+		String result = temp.substring(pos, length);
+		}
+		
+		String result = temp.substring(pos, length);
+		return result;
 	}
 
 	/**
