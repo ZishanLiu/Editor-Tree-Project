@@ -329,16 +329,12 @@ public class EditTree {
 	 */
 	public String get(int pos, int length) throws IndexOutOfBoundsException {
 		String temp = this.toString();
-		
-		if(pos > temp.length() || (pos+length-1)>temp.length()){
+
+		if (pos > temp.length() || (pos + length - 1) > temp.length()) {
 			throw new IndexOutOfBoundsException();
 		}
-		
-		if(length == temp.length() -1){
-		String result = temp.substring(pos, length);
-		}
-		
-		String result = temp.substring(pos, length);
+
+		String result = temp.substring(pos, pos + length);
 		return result;
 	}
 
@@ -406,23 +402,25 @@ public class EditTree {
 	 *         does not occur
 	 */
 	public int find(String s) {
-//		ArrayList<Node> in = toInorderListNode(this.root);
-		if ((this.size() == 0 && s.equals(""))||(s.equals(""))) {
+
+		if ((this.size() == 0 && s.equals("")) || (s.equals(""))) {
 			return 0;
 		}
-//		for(int i =0;i < s.length();i++){
-//			for(int j = 0; j < in.size();j++){
-//				if(s.charAt(i) == in.get(j).element){
-//					return in.get(j).rank;
-//				}
-//				 
-//			}
-//		}
+
+		boolean valid = false;
 		String temp = this.toString();
-		for(int i = 0;i < s.length();i++){
-			for(int j = 0; j < temp.length();j++){
-				if(s.charAt(i) == temp.charAt(j)){
-					return temp.indexOf(temp.charAt(j));
+		// for (int i = 0; i < temp.length()-s.length(); i++) {
+		// if (temp.substring(i, s.length()).equals(s)) {
+		// valid = true;
+		// }
+		// }
+
+		if (temp.length() <= s.length()) {
+			for (int i = 0; i < s.length(); i++) {
+				for (int j = 0; j < temp.length(); j++) {
+					if (s.substring(i, i + temp.length()).equals(temp)) {
+						return i;
+					}
 				}
 			}
 		}
@@ -440,19 +438,22 @@ public class EditTree {
 	 *         not occur before position pos; -1 if s does not occur
 	 */
 	public int find(String s, int pos) {
-		if ((this.size() == 0 && s.equals(""))||(s.equals(""))) {
+		if ((this.size() == 0 && s.equals("")) || (s.equals(""))) {
 			return 0;
 		}
 		String temp = this.toString();
-		for(int i = 0;i < s.length();i++){
-			for(int j = pos; j < temp.length();j++){
-				if(s.charAt(i) == temp.charAt(j)){
-					return temp.indexOf(temp.charAt(j));
+		if (temp.length() <= s.length()) {
+
+			for (int i = 0; i < s.length(); i++) {
+				for (int j = pos; j < temp.length(); j++) {
+					if (s.charAt(i) == temp.charAt(j)) {
+						return temp.indexOf(temp.charAt(j));
+					}
 				}
 			}
 		}
 		return -1;
-		 
+
 	}
 
 	/**
