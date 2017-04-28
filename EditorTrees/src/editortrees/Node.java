@@ -63,7 +63,11 @@ public class Node {
 		if (this == EditTree.NULL_NODE) {
 			return -1;
 		}
-		return 1 + Math.max(left.height(), right.height());
+		if (this.balance == Code.RIGHT) {
+			return 1 + right.height();
+		} else {
+			return 1 + left.height();
+		}
 	}
 
 	/*
@@ -512,15 +516,15 @@ public class Node {
 		return this.left.find(s.substring(1)) + this.right.find(s.substring(1));
 	}
 
-	public Node newAdd(String s,  Node node) {
-		if (s.length() <= 0){
+	public Node newAdd(String s, Node node) {
+		if (s.length() <= 0) {
 			return EditTree.NULL_NODE;
 		}
-		
-		node = new Node(s.charAt(s.length()/2));
-		node.rank = s.length()/2;
-		node.left = newAdd(s.substring(0, s.length()/2) , node.left);
-		node.right = newAdd(s.substring(s.length()/2 + 1) , node.right);
+
+		node = new Node(s.charAt(s.length() / 2));
+		node.rank = s.length() / 2;
+		node.left = newAdd(s.substring(0, s.length() / 2), node.left);
+		node.right = newAdd(s.substring(s.length() / 2 + 1), node.right);
 		node.left.parent = node;
 		node.right.parent = node;
 
