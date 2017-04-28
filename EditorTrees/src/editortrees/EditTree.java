@@ -395,10 +395,27 @@ public class EditTree {
 	 *         does not occur
 	 */
 	public int find(String s) {
-		if (this.size() == 0) {
-			return -1;
+//		ArrayList<Node> in = toInorderListNode(this.root);
+		if ((this.size() == 0 && s.equals(""))||(s.equals(""))) {
+			return 0;
 		}
-		return this.root.find(s);
+//		for(int i =0;i < s.length();i++){
+//			for(int j = 0; j < in.size();j++){
+//				if(s.charAt(i) == in.get(j).element){
+//					return in.get(j).rank;
+//				}
+//				 
+//			}
+//		}
+		String temp = this.toString();
+		for(int i = 0;i < s.length();i++){
+			for(int j = 0; j < temp.length();j++){
+				if(s.charAt(i) == temp.charAt(j)){
+					return temp.indexOf(temp.charAt(j));
+				}
+			}
+		}
+		return -1;
 	}
 
 	/**
@@ -412,7 +429,19 @@ public class EditTree {
 	 *         not occur before position pos; -1 if s does not occur
 	 */
 	public int find(String s, int pos) {
-		return -2;
+		if ((this.size() == 0 && s.equals(""))||(s.equals(""))) {
+			return 0;
+		}
+		String temp = this.toString();
+		for(int i = 0;i < s.length();i++){
+			for(int j = pos; j < temp.length();j++){
+				if(s.charAt(i) == temp.charAt(j)){
+					return temp.indexOf(temp.charAt(j));
+				}
+			}
+		}
+		return -1;
+		 
 	}
 
 	/**

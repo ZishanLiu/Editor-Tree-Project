@@ -505,12 +505,11 @@ public class Node {
 
 	public int find(String s) {
 		for (int i = 0; i < s.length(); i++) {
-			if (this.element != s.charAt(i)) {
-				return this.left.find(s) + this.right.find(s);
+			if (this.element == s.charAt(i)) {
+				return this.rank;
 			}
-			return this.rank;
 		}
-		return this.left.find(s) + this.right.find(s);
+		return this.left.find(s.substring(1)) + this.right.find(s.substring(1));
 	}
 
 	public Node newAdd(String s,  Node node) {
