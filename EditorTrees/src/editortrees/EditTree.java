@@ -98,7 +98,10 @@ public class EditTree {
 	 * @param s
 	 */
 	public EditTree(String s) {
-
+		this.root = NULL_NODE;
+		if (s.length() != 0) {
+			this.root = this.root.newAdd(s, this.root);
+		}
 	}
 
 	/**
@@ -305,7 +308,8 @@ public class EditTree {
 		}
 		DeleteWrapper output = this.root.delete(pos);
 		this.root = output.getReturnNode();
-		//get the number of rotation from nodes that we delete in case we lost their info.
+		// get the number of rotation from nodes that we delete in case we lost
+		// their info.
 		this.numberOfRotation += output.getDeleteNode().numberOfRotation;
 		return output.getDeleteNode().element; // replace by a real calculation.
 	}
@@ -391,7 +395,10 @@ public class EditTree {
 	 *         does not occur
 	 */
 	public int find(String s) {
-		return -2;
+		if (this.size() == 0) {
+			return -1;
+		}
+		return this.root.find(s);
 	}
 
 	/**
