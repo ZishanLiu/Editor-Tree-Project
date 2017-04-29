@@ -35,8 +35,6 @@ public class Node {
 	Node parent;
 	DisplayableNodeWrapper wrap;
 	// Feel free to add other fields that you find useful
-	int numberOfRotation = 0;// A field to count the number of rotations at the
-								// node
 	// You will probably want to add several other methods
 
 	// For the following methods, you should fill in the details so that they
@@ -94,7 +92,7 @@ public class Node {
 		if (this == EditTree.NULL_NODE) {
 			Node add = new Node(ch);
 			add.parent = parent;
-			return new Wrapper(add, true);
+			return new Wrapper(add, true, 0);
 		}
 		if (pos <= this.rank) {
 			this.rank++;
@@ -102,25 +100,27 @@ public class Node {
 			this.left = temp.getNode();
 			Boolean bool = temp.keepChanging;
 			if (!bool) {
-				return new Wrapper(this, false);
+				return new Wrapper(this, false, temp.numberOfRotation);
 			}
 			if (this.balance == Code.SAME) {
 				this.balance = Code.LEFT;
-				return new Wrapper(this, true);
+				return new Wrapper(this, true, 0);
 			} else if (this.balance == Code.RIGHT) {
 				this.balance = Code.SAME;
-				return new Wrapper(this, false);
+				return new Wrapper(this, false, 0);
 			} else if (this.balance == Code.LEFT) {
 				if (this.left.balance == Code.LEFT) {
 					Node output = this.singleRight(this);
 					output.parent = parent;
-					return new Wrapper(output, false);
+					temp.numberOfRotation++;
+					return new Wrapper(output, false, temp.numberOfRotation);
 				} else if (this.left.balance == Code.RIGHT) {
 					Node output = this.doubleRight(this);
 					output.parent = parent;
-					return new Wrapper(output, false);
+					temp.numberOfRotation += 2;
+					return new Wrapper(output, false, temp.numberOfRotation);
 				} else {
-					return new Wrapper(this, false);
+					return new Wrapper(this, false, temp.numberOfRotation);
 				}
 			}
 		} else {
@@ -128,39 +128,31 @@ public class Node {
 			this.right = temp.getNode();
 			Boolean bool = temp.keepChanging;
 			if (!bool) {
-				return new Wrapper(this, false);
+				return new Wrapper(this, false, temp.numberOfRotation);
 			}
 			if (this.balance == Code.SAME) {
 				this.balance = Code.RIGHT;
-				return new Wrapper(this, true);
+				return new Wrapper(this, true, temp.numberOfRotation);
 			} else if (this.balance == Code.LEFT) {
 				this.balance = Code.SAME;
-				return new Wrapper(this, false);
+				return new Wrapper(this, false, temp.numberOfRotation);
 			} else if (this.balance == Code.RIGHT) {
 				if (this.right.balance == Code.RIGHT) {
 					Node output = this.singleLeft(this);
 					output.parent = parent;
-					return new Wrapper(output, false);
+					temp.numberOfRotation++;
+					return new Wrapper(output, false, temp.numberOfRotation);
 				} else if (this.right.balance == Code.LEFT) {
 					Node output = this.doubleLeft(this);
 					output.parent = parent;
-					return new Wrapper(output, false);
+					temp.numberOfRotation += 2;
+					return new Wrapper(output, false, temp.numberOfRotation);
 				} else {
-					return new Wrapper(this, false);
+					return new Wrapper(this, false, temp.numberOfRotation);
 				}
 			}
 		}
-		return new Wrapper(this, false);
-	}
-
-	/*
-	 * A recursion method to get the total rotation count.
-	 */
-	public int totalRotationCount() {
-		if (this == EditTree.NULL_NODE) {
-			return 0;
-		}
-		return this.numberOfRotation + left.totalRotationCount() + right.totalRotationCount();
+		return new Wrapper(this, false, 0);
 	}
 
 	/*
@@ -229,7 +221,6 @@ public class Node {
 		}
 		child.left = parent;
 		parent.parent = child;
-		this.numberOfRotation++;
 		if (child.balance == Code.SAME) {
 			child.balance = Code.LEFT;
 			parent.balance = Code.RIGHT;
@@ -249,7 +240,6 @@ public class Node {
 		}
 		child.right = parent;
 		parent.parent = child;
-		this.numberOfRotation++;
 		if (child.balance == Code.SAME) {
 			child.balance = Code.RIGHT;
 			parent.balance = Code.LEFT;
@@ -284,7 +274,6 @@ public class Node {
 		c.rank = c.rank - b.rank - 1;
 		b.rank += a.rank + 1;
 		b.balance = Code.SAME;
-		this.numberOfRotation += 2;
 		return b;
 	}
 
@@ -312,7 +301,6 @@ public class Node {
 		a.rank = a.rank - c.rank - b.rank - 2;
 		b.rank += c.rank + 1;
 		b.balance = Code.SAME;
-		this.numberOfRotation += 2;
 		return b;
 	}
 
@@ -332,30 +320,33 @@ public class Node {
 			// check if we need to keep changing balance code.
 			// After rotation may not need to change.
 			if (!output.keepChanging) {
-				return new DeleteWrapper(this, output.deleteNode, false);
+				return new DeleteWrapper(this, output.deleteNode, false, output.numberOfRotation);
 			}
 			// If it is true, keep updating the balance code.
 			if (this.balance == Code.LEFT) {
 				this.balance = Code.SAME;
-				return new DeleteWrapper(this, output.deleteNode, true);
+				return new DeleteWrapper(this, output.deleteNode, true, output.numberOfRotation);
 			} else if (this.balance == Code.SAME) {
 				this.balance = Code.RIGHT;
-				return new DeleteWrapper(this, output.deleteNode, false);
+				return new DeleteWrapper(this, output.deleteNode, false, output.numberOfRotation);
 			} else {
 				Node thisParent = this.parent;
 				// determine when we should roate after deletion.
 				if (this.right.balance == Code.RIGHT) {
 					Node rotateNode = singleLeft(this);
 					rotateNode.parent = thisParent;
-					return new DeleteWrapper(rotateNode, output.deleteNode, true);
+					output.numberOfRotation++;
+					return new DeleteWrapper(rotateNode, output.deleteNode, true, output.numberOfRotation);
 				} else if (this.right.balance == Code.LEFT) {
 					Node rotateNode = doubleLeft(this);
 					rotateNode.parent = thisParent;
-					return new DeleteWrapper(rotateNode, output.deleteNode, true);
+					output.numberOfRotation += 2;
+					return new DeleteWrapper(rotateNode, output.deleteNode, true, output.numberOfRotation);
 				} else {
 					Node rotateNode = singleLeft(this);
 					rotateNode.parent = thisParent;
-					return new DeleteWrapper(rotateNode, output.deleteNode, false);
+					output.numberOfRotation++;
+					return new DeleteWrapper(rotateNode, output.deleteNode, false, output.numberOfRotation);
 				}
 			}
 		} else if (pos > this.rank) {
@@ -365,14 +356,14 @@ public class Node {
 			output.retrunNode.parent = this;
 			// Update balance code when boolean is true.
 			if (!output.keepChanging) {
-				return new DeleteWrapper(this, output.deleteNode, false);
+				return new DeleteWrapper(this, output.deleteNode, false, output.numberOfRotation);
 			}
 			if (this.balance == Code.RIGHT) {
 				this.balance = Code.SAME;
-				return new DeleteWrapper(this, output.deleteNode, true);
+				return new DeleteWrapper(this, output.deleteNode, true, output.numberOfRotation);
 			} else if (this.balance == Code.SAME) {
 				this.balance = Code.LEFT;
-				return new DeleteWrapper(this, output.deleteNode, false);
+				return new DeleteWrapper(this, output.deleteNode, false, output.numberOfRotation);
 			} else {
 				// determine when we should rotate after deletion by checking
 				// balance codes above.
@@ -380,78 +371,88 @@ public class Node {
 				if (this.left.balance == Code.LEFT) {
 					Node rotateNode = singleRight(this);
 					rotateNode.parent = thisParent;
-					return new DeleteWrapper(rotateNode, output.deleteNode, true);
+					output.numberOfRotation++;
+					return new DeleteWrapper(rotateNode, output.deleteNode, true, output.numberOfRotation);
 				} else if (this.left.balance == Code.RIGHT) {
 					Node rotateNode = doubleRight(this);
 					rotateNode.parent = thisParent;
-					return new DeleteWrapper(rotateNode, output.deleteNode, true);
+					output.numberOfRotation += 2;
+					return new DeleteWrapper(rotateNode, output.deleteNode, true, output.numberOfRotation);
 				} else {
 					Node rotateNode = singleRight(this);
 					rotateNode.parent = thisParent;
-					return new DeleteWrapper(rotateNode, output.deleteNode, false);
+					output.numberOfRotation++;
+					return new DeleteWrapper(rotateNode, output.deleteNode, false, output.numberOfRotation);
 				}
 			}
 		} else {
 			// speical case
 			if (this.left == EditTree.NULL_NODE && this.right == EditTree.NULL_NODE) {
-				return new DeleteWrapper(EditTree.NULL_NODE, this, true);
+				return new DeleteWrapper(EditTree.NULL_NODE, this, true, 0);
 			} else if (this.left == EditTree.NULL_NODE) {
-				return new DeleteWrapper(this.right, this, true);
+				return new DeleteWrapper(this.right, this, true, 0);
 			} else if (this.right == EditTree.NULL_NODE) {
-				return new DeleteWrapper(this.left, this, true);
+				return new DeleteWrapper(this.left, this, true, 0);
 			} else {
-				// when we need to delete root, we need to get the node that has
-				// pos 0 in the right subtree, so call delete()itself
-				// would be far more easier than if we analyze different
-				// situations again.
-				DeleteWrapper temp = this.right.delete(0);
-				this.right = temp.retrunNode;
-				Node d = temp.deleteNode;
-				d.parent = EditTree.NULL_NODE;
-				// Update infomation after we call delete();
-				d.left = this.left;
-				if (d.equals(this.right)) {
-					d.right = this.right.right;
-				} else {
-					d.right = this.right;
-				}
-				d.rank = this.rank;
-				int l = d.left.height();
-				int r = d.right.height();
-				Node dParent = d.parent;
-				if (l - r == 1) {
-					d.balance = Code.LEFT;
-					if (this.balance == Code.SAME) {
-						d.parent = dParent;
-						return new DeleteWrapper(d, this, false);
-					}
-				} else if (r - l == 1) {
-					d.balance = Code.RIGHT;
-					if (this.balance == Code.SAME) {
-						d.parent = dParent;
-						return new DeleteWrapper(d, this, false);
-					}
-				} else if (r == l) {
-					d.balance = Code.SAME;
-				} else if (l - r == 2) {
-					if (d.left.balance == Code.LEFT) {
-						d = singleRight(d);
-
-					} else if (d.left.balance == Code.RIGHT) {
-						d = doubleRight(d);
-					}
-				} else if (r - l == 2) {
-					if (d.right.balance == Code.RIGHT) {
-						d = singleLeft(d);
-					} else if (d.right.balance == Code.LEFT) {
-						d = doubleLeft(d);
-					}
-				}
-
-				d.parent = dParent;
-				return new DeleteWrapper(d, this, temp.keepChanging);
+				return this.deleteWhenTwoChildren();
 			}
 		}
+	}
+
+	public DeleteWrapper deleteWhenTwoChildren() {
+		// when we need to delete root, we need to get the node that has
+		// pos 0 in the right subtree, so call delete()itself
+		// would be far more easier than if we analyze different
+		// situations again.
+		DeleteWrapper temp = this.right.delete(0);
+		this.right = temp.retrunNode;
+		Node d = temp.deleteNode;
+		d.parent = EditTree.NULL_NODE;
+		// Update infomation after we call delete();
+		d.left = this.left;
+		if (d.equals(this.right)) {
+			d.right = this.right.right;
+		} else {
+			d.right = this.right;
+		}
+		d.rank = this.rank;
+		int l = d.left.height();
+		int r = d.right.height();
+		Node dParent = d.parent;
+		int rotate = temp.numberOfRotation;
+		if (l - r == 1) {
+			d.balance = Code.LEFT;
+			if (this.balance == Code.SAME) {
+				d.parent = dParent;
+				return new DeleteWrapper(d, this, false, rotate);
+			}
+		} else if (r - l == 1) {
+			d.balance = Code.RIGHT;
+			if (this.balance == Code.SAME) {
+				d.parent = dParent;
+				return new DeleteWrapper(d, this, false, rotate);
+			}
+		} else if (r == l) {
+			d.balance = Code.SAME;
+		} else if (l - r == 2) {
+			if (d.left.balance == Code.LEFT) {
+				d = singleRight(d);
+				rotate++;
+			} else if (d.left.balance == Code.RIGHT) {
+				d = doubleRight(d);
+				rotate += 2;
+			}
+		} else if (r - l == 2) {
+			if (d.right.balance == Code.RIGHT) {
+				d = singleLeft(d);
+				rotate++;
+			} else if (d.right.balance == Code.LEFT) {
+				d = doubleLeft(d);
+				rotate += 2;
+			}
+		}
+		d.parent = dParent;
+		return new DeleteWrapper(d, this, temp.keepChanging, rotate);
 	}
 
 	/**
@@ -461,14 +462,20 @@ public class Node {
 	class Wrapper {
 		private Node node;
 		private boolean keepChanging;
+		private int numberOfRotation = 0;
 
-		public Wrapper(Node node, boolean heightChanged) {
+		public Wrapper(Node node, boolean heightChanged, int rotation) {
 			this.node = node;
 			this.keepChanging = heightChanged;
+			this.numberOfRotation = rotation;
 		}
 
 		public Node getNode() {
 			return node;
+		}
+
+		public int getNumberofRotation() {
+			return this.numberOfRotation;
 		}
 	}
 
@@ -476,11 +483,13 @@ public class Node {
 		private Node retrunNode;
 		private Node deleteNode;
 		private boolean keepChanging;
+		private int numberOfRotation;
 
-		public DeleteWrapper(Node returnNode, Node deleteNode, boolean keepChanging) {
+		public DeleteWrapper(Node returnNode, Node deleteNode, boolean keepChanging, int rotation) {
 			this.retrunNode = returnNode;
 			this.deleteNode = deleteNode;
 			this.keepChanging = keepChanging;
+			this.numberOfRotation = rotation;
 		}
 
 		public Node getReturnNode() {
@@ -489,6 +498,10 @@ public class Node {
 
 		public Node getDeleteNode() {
 			return this.deleteNode;
+		}
+
+		public int getNumberOfRotation() {
+			return this.numberOfRotation;
 		}
 	}
 

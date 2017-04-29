@@ -111,7 +111,8 @@ public class EditTree {
 	 * @return number of rotations since tree was created.
 	 */
 	public int totalRotationCount() {
-		return root.totalRotationCount() + this.numberOfRotation;
+		// return root.totalRotationCount() + this.numberOfRotation;
+		return this.numberOfRotation;
 	}
 
 	/**
@@ -246,6 +247,7 @@ public class EditTree {
 			throw new IndexOutOfBoundsException();
 		}
 		Wrapper rootWrapper = this.root.add(ch, pos, this.root);
+		this.numberOfRotation += rootWrapper.getNumberofRotation();
 		this.root = rootWrapper.getNode();
 
 	}
@@ -310,7 +312,7 @@ public class EditTree {
 		this.root = output.getReturnNode();
 		// get the number of rotation from nodes that we delete in case we lost
 		// their info.
-		this.numberOfRotation += output.getDeleteNode().numberOfRotation;
+		this.numberOfRotation += output.getNumberOfRotation();
 		return output.getDeleteNode().element; // replace by a real calculation.
 	}
 
@@ -349,7 +351,9 @@ public class EditTree {
 	 *             if this == other
 	 */
 	public void concatenate(EditTree other) throws IllegalArgumentException {
-
+		if (this == other) {
+			throw new IllegalArgumentException();
+		}
 	}
 
 	/**
