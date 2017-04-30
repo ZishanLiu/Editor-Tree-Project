@@ -506,7 +506,6 @@ public class Node {
 	}
 
 	public Node refreshBalance() {
-		// TODO Auto-generated method stub.
 		int l = this.left.height();
 		int r = this.right.height();
 		Node thisParent = this.parent;
@@ -537,6 +536,36 @@ public class Node {
 		}
 		this.parent = thisParent;
 		return this;
+	}
+
+	public SplitWrapper split(int pos) {
+		EditTree rightTree = new EditTree();
+		EditTree leftTree = new EditTree();
+		if (pos < this.rank) {
+			SplitWrapper s = this.left.split(pos);
+			this.left = EditTree.NULL_NODE;
+			if (this.right != EditTree.NULL_NODE) {
+				this.balance = Code.RIGHT;
+			}
+			EditTree tempRight = new EditTree(this);
+			s.rightTree.concatenate(tempRight);
+			return new SplitWrapper(s.leftTree, s.rightTree);
+		} else if (pos > this.rank) {
+			SplitWrapper s = this.right.split(pos - this.rank - 1);
+			EditTree tempLeft = new EditTree(this.left);
+			tempLeft.concatenate(s.leftTree);
+			return new SplitWrapper(tempLeft, s.rightTree);
+		} else {
+			EditTree tempLeft = new EditTree(this.left);
+			tempLeft.concatenate(leftTree);
+			this.left = EditTree.NULL_NODE;
+			if (this.right != EditTree.NULL_NODE) {
+				this.balance = Code.RIGHT;
+			}
+			EditTree tempRight = new EditTree(this);
+			rightTree.concatenate(tempRight);
+			return new SplitWrapper(tempLeft, rightTree);
+		}
 	}
 
 	/**
@@ -589,4 +618,21 @@ public class Node {
 		}
 	}
 
+	class SplitWrapper {
+		private EditTree leftTree;
+		private EditTree rightTree;
+
+		public SplitWrapper(EditTree leftTree, EditTree rightTree) {
+			this.leftTree = leftTree;
+			this.rightTree = rightTree;
+		}
+
+		public EditTree getRightTree() {
+			return this.rightTree;
+		}
+
+		public EditTree getLeftTree() {
+			return this.leftTree;
+		}
+	}
 }

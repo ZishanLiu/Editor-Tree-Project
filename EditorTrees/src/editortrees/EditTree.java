@@ -7,6 +7,7 @@ import java.util.Stack;
 
 import editortrees.Node.Code;
 import editortrees.Node.DeleteWrapper;
+import editortrees.Node.SplitWrapper;
 import editortrees.Node.Wrapper;
 
 // A height-balanced binary tree with rank that could be the basis for a text editor.
@@ -17,6 +18,10 @@ public class EditTree {
 	private Node root;
 	public static final Node NULL_NODE = new Node();
 	private int numberOfRotation = 0;
+
+	public EditTree(Node root) {
+		this.root = root;
+	}
 
 	/**
 	 * MILESTONE 1 Construct an empty tree
@@ -51,7 +56,6 @@ public class EditTree {
 		}
 		Node temp = e.getRoot().copy();
 		this.root = temp;
-
 	}
 
 	// use queue to get the level order traversal of a tree.
@@ -428,7 +432,7 @@ public class EditTree {
 			}
 			leftmost.right = current;
 			current.parent = leftmost;
-			leftmost.rank = current.size();
+			leftmost.rank = this.root.size();
 			leftmost.left = this.root;
 			this.root.parent = leftmost;
 			if (leftmost != other.root.parent) {
@@ -458,7 +462,12 @@ public class EditTree {
 	 * @throws IndexOutOfBoundsException
 	 */
 	public EditTree split(int pos) throws IndexOutOfBoundsException {
-		return null; // replace by a real calculation.
+		if (pos < 0 || pos > this.size()) {
+			throw new IndexOutOfBoundsException();
+		}
+		SplitWrapper output = this.root.split(pos);
+		this.root = output.getLeftTree().root;
+		return output.getRightTree(); // replace by a real calculation.
 	}
 
 	/**
