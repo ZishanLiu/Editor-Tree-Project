@@ -405,7 +405,7 @@ public class EditTree {
 				this.root = leftmost;
 			}
 		} else {
-			Node leftmost = new Node(this.delete(0));
+			Node leftmost = new Node(this.delete(this.size() - 1));
 			thisHeight = this.height();
 			Node current = other.root;
 			while (otherHeight - thisHeight > 1) {
