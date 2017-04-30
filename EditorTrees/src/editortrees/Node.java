@@ -455,56 +455,6 @@ public class Node {
 		return new DeleteWrapper(d, this, temp.keepChanging, rotate);
 	}
 
-	/**
-	 * This is an inner class to wrap a node and a boolean together. Used for
-	 * return in add.
-	 */
-	class Wrapper {
-		private Node node;
-		private boolean keepChanging;
-		private int numberOfRotation = 0;
-
-		public Wrapper(Node node, boolean heightChanged, int rotation) {
-			this.node = node;
-			this.keepChanging = heightChanged;
-			this.numberOfRotation = rotation;
-		}
-
-		public Node getNode() {
-			return node;
-		}
-
-		public int getNumberofRotation() {
-			return this.numberOfRotation;
-		}
-	}
-
-	class DeleteWrapper {
-		private Node retrunNode;
-		private Node deleteNode;
-		private boolean keepChanging;
-		private int numberOfRotation;
-
-		public DeleteWrapper(Node returnNode, Node deleteNode, boolean keepChanging, int rotation) {
-			this.retrunNode = returnNode;
-			this.deleteNode = deleteNode;
-			this.keepChanging = keepChanging;
-			this.numberOfRotation = rotation;
-		}
-
-		public Node getReturnNode() {
-			return this.retrunNode;
-		}
-
-		public Node getDeleteNode() {
-			return this.deleteNode;
-		}
-
-		public int getNumberOfRotation() {
-			return this.numberOfRotation;
-		}
-	}
-
 	public Node copy() {
 		// use recursion to copy nodes.
 		if (this == EditTree.NULL_NODE) {
@@ -552,6 +502,90 @@ public class Node {
 			return this.right.get(pos - this.rank - 1);
 		} else {
 			return this.element;
+		}
+	}
+
+	public Node refreshBalance() {
+		// TODO Auto-generated method stub.
+		int l = this.left.height();
+		int r = this.right.height();
+		Node thisParent = this.parent;
+		if (l - r == 1) {
+			this.balance = Code.LEFT;
+			if (this.balance == Code.SAME) {
+				this.parent = thisParent;
+			}
+		} else if (r - l == 1) {
+			this.balance = Code.RIGHT;
+			if (this.balance == Code.SAME) {
+				this.parent = thisParent;
+			}
+		} else if (r == l) {
+			this.balance = Code.SAME;
+		} else if (l - r == 2) {
+			if (this.left.balance == Code.RIGHT) {
+				return doubleRight(this);
+			} else {
+				return singleRight(this);
+			}
+		} else if (r - l == 2) {
+			if (this.right.balance == Code.LEFT) {
+				return doubleLeft(this);
+			} else {
+				return singleLeft(this);
+			}
+		}
+		this.parent = thisParent;
+		return this;
+	}
+
+	/**
+	 * This is an inner class to wrap a node and a boolean together. Used for
+	 * return in add.
+	 */
+	class Wrapper {
+		private Node node;
+		private boolean keepChanging;
+		private int numberOfRotation = 0;
+
+		public Wrapper(Node node, boolean heightChanged, int rotation) {
+			this.node = node;
+			this.keepChanging = heightChanged;
+			this.numberOfRotation = rotation;
+		}
+
+		public Node getNode() {
+			return node;
+		}
+
+		public int getNumberofRotation() {
+			return this.numberOfRotation;
+		}
+	}
+
+	class DeleteWrapper {
+		private Node retrunNode;
+		private Node deleteNode;
+		private boolean keepChanging;
+		private int numberOfRotation;
+
+		public DeleteWrapper(Node returnNode, Node deleteNode, boolean keepChanging, int rotation) {
+			this.retrunNode = returnNode;
+			this.deleteNode = deleteNode;
+			this.keepChanging = keepChanging;
+			this.numberOfRotation = rotation;
+		}
+
+		public Node getReturnNode() {
+			return this.retrunNode;
+		}
+
+		public Node getDeleteNode() {
+			return this.deleteNode;
+		}
+
+		public int getNumberOfRotation() {
+			return this.numberOfRotation;
 		}
 	}
 

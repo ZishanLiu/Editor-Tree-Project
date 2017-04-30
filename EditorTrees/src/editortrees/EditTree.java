@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Stack;
 
+import editortrees.Node.Code;
 import editortrees.Node.DeleteWrapper;
 import editortrees.Node.Wrapper;
 
@@ -331,11 +332,11 @@ public class EditTree {
 	 */
 	public String get(int pos, int length) throws IndexOutOfBoundsException {
 		String result = "";
-		//throw exception
+		// throw exception
 		if (pos > this.size() || (pos + length - 1) >= this.size()) {
 			throw new IndexOutOfBoundsException();
 		}
-		//use get(),because it is logN.
+		// use get(),because it is logN.
 		for (int i = 0; i < length; i++) {
 			result += this.get(pos + i);
 		}
@@ -357,6 +358,92 @@ public class EditTree {
 		if (this == other) {
 			throw new IllegalArgumentException();
 		}
+		if (this.root == NULL_NODE) {
+			this.root = other.root;
+			other.root = NULL_NODE;
+			return;
+		}
+		if (other.root == NULL_NODE) {
+			return;
+		}
+		int thisHeight = this.height();
+		int otherHeight = other.height();
+		if (thisHeight >= otherHeight) {
+			Node leftmost = new Node(other.delete(0));
+			otherHeight = other.height();
+			Node current = this.root;
+			while (thisHeight - otherHeight > 1) {
+				if (current.balance == Code.LEFT) {
+					thisHeight -= 2;
+				} else {
+					thisHeight--;
+				}
+				current = current.right;
+			}
+			Node parent = current.parent;
+			if (thisHeight == otherHeight) {
+				leftmost.balance = Code.SAME;
+			} else {
+				leftmost.balance = Code.LEFT;
+			}
+			if (parent != EditTree.NULL_NODE) {
+				parent.right = leftmost;
+				leftmost.parent = parent;
+			}
+			leftmost.left = current;
+			current.parent = leftmost;
+			leftmost.rank = current.size();
+			leftmost.right = other.root;
+			other.root.parent = leftmost;
+			if (leftmost != this.root.parent) {
+				if (leftmost.parent != this.root) {
+					leftmost.parent.parent.right = leftmost.parent.refreshBalance();
+				} else {
+					this.root = this.root.refreshBalance();
+				}
+			} else {
+				this.root = leftmost;
+			}
+		} else {
+			Node leftmost = new Node(this.delete(0));
+			thisHeight = this.height();
+			Node current = other.root;
+			while (otherHeight - thisHeight > 1) {
+				if (current.balance == Code.LEFT) {
+					otherHeight -= 2;
+				} else {
+					otherHeight--;
+				}
+				current = current.left;
+			}
+			Node parent = current.parent;
+			if (thisHeight == otherHeight) {
+				leftmost.balance = Code.SAME;
+			} else {
+				leftmost.balance = Code.RIGHT;
+			}
+			if (parent != EditTree.NULL_NODE) {
+				parent.left = leftmost;
+				leftmost.parent = parent;
+			}
+			leftmost.right = current;
+			current.parent = leftmost;
+			leftmost.rank = current.size();
+			leftmost.left = this.root;
+			this.root.parent = leftmost;
+			if (leftmost != other.root.parent) {
+				if (leftmost.parent != other.root) {
+					leftmost.parent.parent.left = leftmost.parent.refreshBalance();
+				} else {
+					other.root = other.root.refreshBalance();
+				}
+				this.root = other.root;
+			} else {
+				this.root = leftmost;
+			}
+		}
+
+		other.root = EditTree.NULL_NODE;
 	}
 
 	/**
