@@ -264,7 +264,7 @@ public class EditTree {
 		if (pos >= this.size() || pos < 0) {
 			throw new IndexOutOfBoundsException();
 		}
-		return this.toString().charAt(pos);
+		return this.root.get(pos);
 	}
 
 	/**
@@ -330,13 +330,16 @@ public class EditTree {
 	 *             within this tree.
 	 */
 	public String get(int pos, int length) throws IndexOutOfBoundsException {
-		String temp = this.toString();
-
-		if (pos > temp.length() || (pos + length - 1) > temp.length()) {
+		String result = "";
+		//throw exception
+		if (pos > this.size() || (pos + length - 1) >= this.size()) {
 			throw new IndexOutOfBoundsException();
 		}
+		//use get(),because it is logN.
+		for (int i = 0; i < length; i++) {
+			result += this.get(pos + i);
+		}
 
-		String result = temp.substring(pos, pos + length);
 		return result;
 	}
 

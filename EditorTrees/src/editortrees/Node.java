@@ -544,4 +544,15 @@ public class Node {
 		return node;
 	}
 
+	public char get(int pos) {
+
+		if (pos < this.rank) {
+			return this.left.get(pos);
+		} else if (pos > this.rank) {
+			return this.right.get(pos - this.rank - 1);
+		} else {
+			return this.element;
+		}
+	}
+
 }
