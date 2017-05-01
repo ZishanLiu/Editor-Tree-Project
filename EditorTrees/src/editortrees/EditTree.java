@@ -359,9 +359,11 @@ public class EditTree {
 	 *             if this == other
 	 */
 	public void concatenate(EditTree other) throws IllegalArgumentException {
+		// throw exception when two trees are the same.
 		if (this == other) {
 			throw new IllegalArgumentException();
 		}
+		// just link the other tree to the root if my tree is empty.
 		if (this.root == NULL_NODE) {
 			this.root = other.root;
 			other.root = NULL_NODE;
@@ -370,12 +372,19 @@ public class EditTree {
 		if (other.root == NULL_NODE) {
 			return;
 		}
+		// get the height of two trees.
+		// compare the heights of two trees until we find a subtree that has the
+		// same heights as other
+		// tree
 		int thisHeight = this.height();
 		int otherHeight = other.height();
 		if (thisHeight >= otherHeight) {
+			// use delete()to find the leftmost node of other, it will be the
+			// new root.
 			Node leftmost = new Node(other.delete(0));
 			otherHeight = other.height();
 			Node current = this.root;
+			// refresh the balance code
 			while (thisHeight - otherHeight > 1) {
 				if (current.balance == Code.LEFT) {
 					thisHeight -= 2;
@@ -394,6 +403,7 @@ public class EditTree {
 				parent.right = leftmost;
 				leftmost.parent = parent;
 			}
+			// connect to trees and refresh the information of leftmost.
 			leftmost.left = current;
 			current.parent = leftmost;
 			leftmost.rank = current.size();
@@ -409,9 +419,11 @@ public class EditTree {
 				this.root = leftmost;
 			}
 		} else {
+			// grab the rightmost of this tree and let it be the root.
 			Node leftmost = new Node(this.delete(this.size() - 1));
 			thisHeight = this.height();
 			Node current = other.root;
+			// refresh balance code
 			while (otherHeight - thisHeight > 1) {
 				if (current.balance == Code.LEFT) {
 					otherHeight -= 2;
@@ -430,6 +442,7 @@ public class EditTree {
 				parent.left = leftmost;
 				leftmost.parent = parent;
 			}
+			// refresh information of new root.
 			leftmost.right = current;
 			current.parent = leftmost;
 			leftmost.rank = this.root.size();

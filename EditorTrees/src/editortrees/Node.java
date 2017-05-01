@@ -495,7 +495,8 @@ public class Node {
 	}
 
 	public char get(int pos) {
-
+		//Since we have the relationship between pos and rank, we don't need to
+		//go thought each node in the tree.
 		if (pos < this.rank) {
 			return this.left.get(pos);
 		} else if (pos > this.rank) {
@@ -506,6 +507,7 @@ public class Node {
 	}
 
 	public Node refreshBalance() {
+		//method for refreshing. Same as we did in add and deletion.
 		int l = this.left.height();
 		int r = this.right.height();
 		Node thisParent = this.parent;
