@@ -372,10 +372,8 @@ public class EditTree {
 		if (other.root == NULL_NODE) {
 			return;
 		}
-		// get the height of two trees.
-		// compare the heights of two trees until we find a subtree that has the
-		// same heights as other
-		// tree
+		// Get the height of two trees. Compare the heights of two trees until
+		// we find a subtree that has the same heights as other tree
 		int thisHeight = this.height();
 		int otherHeight = other.height();
 		if (thisHeight >= otherHeight) {
@@ -422,6 +420,7 @@ public class EditTree {
 			}
 		} else {
 			// grab the rightmost of this tree and let it be the root.
+			System.out.println(this.size() - 1);
 			Node rightmost = new Node(this.delete(this.size() - 1));
 			thisHeight = this.height();
 			Node current = other.root;
@@ -463,7 +462,6 @@ public class EditTree {
 				this.root = rightmost;
 			}
 		}
-
 		other.root = EditTree.NULL_NODE;
 	}
 
