@@ -391,7 +391,9 @@ public class EditTree {
 				} else {
 					thisHeight--;
 				}
+				Node p = current;
 				current = current.right;
+				current.parent = p;
 			}
 			Node parent = current.parent;
 			if (thisHeight == otherHeight) {
@@ -399,7 +401,7 @@ public class EditTree {
 			} else {
 				leftmost.balance = Code.LEFT;
 			}
-			if (parent != EditTree.NULL_NODE) {
+			if (parent != null) {
 				parent.right = leftmost;
 				leftmost.parent = parent;
 			}
@@ -420,43 +422,45 @@ public class EditTree {
 			}
 		} else {
 			// grab the rightmost of this tree and let it be the root.
-			Node leftmost = new Node(this.delete(this.size() - 1));
+			Node rightmost = new Node(this.delete(this.size() - 1));
 			thisHeight = this.height();
 			Node current = other.root;
 			// refresh balance code
 			while (otherHeight - thisHeight > 1) {
-				if (current.balance == Code.LEFT) {
+				if (current.balance == Code.RIGHT) {
 					otherHeight -= 2;
 				} else {
 					otherHeight--;
 				}
+				Node p = current;
 				current = current.left;
+				current.parent = p;
 			}
 			Node parent = current.parent;
 			if (thisHeight == otherHeight) {
-				leftmost.balance = Code.SAME;
+				rightmost.balance = Code.SAME;
 			} else {
-				leftmost.balance = Code.RIGHT;
+				rightmost.balance = Code.RIGHT;
 			}
-			if (parent != EditTree.NULL_NODE) {
-				parent.left = leftmost;
-				leftmost.parent = parent;
+			if (parent != null) {
+				parent.left = rightmost;
+				rightmost.parent = parent;
 			}
 			// refresh information of new root.
-			leftmost.right = current;
-			current.parent = leftmost;
-			leftmost.rank = this.root.size();
-			leftmost.left = this.root;
-			this.root.parent = leftmost;
-			if (leftmost != other.root.parent) {
-				if (leftmost.parent != other.root) {
-					leftmost.parent.parent.left = leftmost.parent.refreshBalance();
+			rightmost.right = current;
+			current.parent = rightmost;
+			rightmost.rank = this.root.size();
+			rightmost.left = this.root;
+			this.root.parent = rightmost;
+			if (rightmost != other.root.parent) {
+				if (rightmost.parent != other.root) {
+					rightmost.parent.parent.left = rightmost.parent.refreshBalance();
 				} else {
 					other.root = other.root.refreshBalance();
 				}
 				this.root = other.root;
 			} else {
-				this.root = leftmost;
+				this.root = rightmost;
 			}
 		}
 

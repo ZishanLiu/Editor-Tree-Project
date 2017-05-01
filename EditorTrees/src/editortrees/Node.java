@@ -495,8 +495,8 @@ public class Node {
 	}
 
 	public char get(int pos) {
-		//Since we have the relationship between pos and rank, we don't need to
-		//go thought each node in the tree.
+		// Since we have the relationship between pos and rank, we don't need to
+		// go thought each node in the tree.
 		if (pos < this.rank) {
 			return this.left.get(pos);
 		} else if (pos > this.rank) {
@@ -507,7 +507,7 @@ public class Node {
 	}
 
 	public Node refreshBalance() {
-		//method for refreshing. Same as we did in add and deletion.
+		// method for refreshing. Same as we did in add and deletion.
 		int l = this.left.height();
 		int r = this.right.height();
 		Node thisParent = this.parent;
@@ -546,6 +546,7 @@ public class Node {
 		if (pos < this.rank) {
 			SplitWrapper s = this.left.split(pos);
 			this.left = EditTree.NULL_NODE;
+			this.rank = 0;
 			if (this.right != EditTree.NULL_NODE) {
 				this.balance = Code.RIGHT;
 			}
@@ -554,13 +555,18 @@ public class Node {
 			return new SplitWrapper(s.leftTree, s.rightTree);
 		} else if (pos > this.rank) {
 			SplitWrapper s = this.right.split(pos - this.rank - 1);
-			EditTree tempLeft = new EditTree(this.left);
+			this.right = EditTree.NULL_NODE;
+			EditTree tempLeft = new EditTree(this);
 			tempLeft.concatenate(s.leftTree);
 			return new SplitWrapper(tempLeft, s.rightTree);
 		} else {
-			EditTree tempLeft = new EditTree(this.left);
-			tempLeft.concatenate(leftTree);
+			EditTree tempLeft = leftTree;
+			if (this.left != EditTree.NULL_NODE) {
+				tempLeft = new EditTree(this.left);
+				tempLeft.concatenate(leftTree);
+			}
 			this.left = EditTree.NULL_NODE;
+			this.rank = 0;
 			if (this.right != EditTree.NULL_NODE) {
 				this.balance = Code.RIGHT;
 			}
