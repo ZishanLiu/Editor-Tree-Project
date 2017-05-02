@@ -7,7 +7,6 @@ import java.util.Stack;
 
 import editortrees.Node.Code;
 import editortrees.Node.DeleteWrapper;
-import editortrees.Node.SplitWrapper;
 import editortrees.Node.Wrapper;
 
 // A height-balanced binary tree with rank that could be the basis for a text editor.
@@ -272,6 +271,13 @@ public class EditTree {
 		return this.root.get(pos);
 	}
 
+	public Node getPosNode(int pos) throws IndexOutOfBoundsException {
+		if (pos >= this.size() || pos < 0) {
+			throw new IndexOutOfBoundsException();
+		}
+		return this.root.getThis(pos);
+	}
+
 	/**
 	 * MILESTONE 1
 	 * 
@@ -480,9 +486,26 @@ public class EditTree {
 		if (pos < 0 || pos > this.size()) {
 			throw new IndexOutOfBoundsException();
 		}
-		SplitWrapper output = this.root.split(pos);
-		this.root = output.getLeftTree().root;
-		return output.getRightTree(); // replace by a real calculation.
+		//// SplitWrapper output = this.root.split(pos);
+		//// this.root = output.getLeftTree().root;
+		//// return output.getRightTree();
+		//
+
+		String delete = "";
+
+		ArrayList<Node> result = this.toInorderListNode(this.root);
+
+		for (int i = pos; i < result.size(); i++) {
+			delete += result.get(i).element;
+
+		}
+
+		for (int i = pos; i < this.size(); i++) {
+			this.delete(i);
+		}
+
+		return new EditTree(delete);
+
 	}
 
 	/**
