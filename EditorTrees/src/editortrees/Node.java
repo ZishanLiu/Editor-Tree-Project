@@ -505,7 +505,7 @@ public class Node {
 			return this.element;
 		}
 	}
-	
+
 	public Node getThis(int pos) {
 		// Since we have the relationship between pos and rank, we don't need to
 		// go thought each node in the tree.
@@ -552,34 +552,129 @@ public class Node {
 		return this;
 	}
 
-	public SplitWrapper split(int pos) {
-		if (pos < this.rank) {
-			EditTree tempRight = new EditTree(this.right);
-			EditTree tempCenter = new EditTree(this.element);
-			tempCenter.concatenate(tempRight);
-			tempRight = tempCenter;
-			this.balance = Code.RIGHT;
-			SplitWrapper s = this.left.split(pos);
-			s.rightTree.concatenate(tempRight);
-			return new SplitWrapper(s.leftTree, s.rightTree);
-		} else if (pos > this.rank) {
-			EditTree tempLeft = new EditTree(this.left);
-			EditTree tempCenter = new EditTree(this.element);
-			tempLeft.concatenate(tempCenter);
-			SplitWrapper s = this.right.split(pos - this.rank - 1);
-			tempLeft.concatenate(s.leftTree);
-			this.balance = Code.LEFT;
-			return new SplitWrapper(tempLeft, s.rightTree);
-		} else {
-			EditTree tempLeft = new EditTree(this.left);
-			EditTree tempRight = new EditTree(this.right);
-			EditTree tempCenter = new EditTree(this.element);
-			tempCenter.concatenate(tempRight);
-			tempRight = tempCenter;
-			this.balance = Code.RIGHT;
-			return new SplitWrapper(tempLeft, tempRight);
-		}
-	}
+	/**
+	 * This is our first try on split by calling the concatenate method we made.
+	 */
+	// public SplitWrapper split(int pos) {
+	// if (pos < this.rank) {
+	// EditTree tempRight = new EditTree(this.right);
+	// EditTree tempCenter = new EditTree(this.element);
+	// tempCenter.concatenate(tempRight);
+	// tempRight = tempCenter;
+	// this.balance = Code.RIGHT;
+	// SplitWrapper s = this.left.split(pos);
+	// s.rightTree.concatenate(tempRight);
+	// return new SplitWrapper(s.leftTree, s.rightTree);
+	// } else if (pos > this.rank) {
+	// EditTree tempLeft = new EditTree(this.left);
+	// EditTree tempCenter = new EditTree(this.element);
+	// tempLeft.concatenate(tempCenter);
+	// SplitWrapper s = this.right.split(pos - this.rank - 1);
+	// tempLeft.concatenate(s.leftTree);
+	// this.balance = Code.LEFT;
+	// return new SplitWrapper(tempLeft, s.rightTree);
+	// } else {
+	// EditTree tempLeft = new EditTree(this.left);
+	// EditTree tempRight = new EditTree(this.right);
+	// EditTree tempCenter = new EditTree(this.element);
+	// tempCenter.concatenate(tempRight);
+	// tempRight = tempCenter;
+	// this.balance = Code.RIGHT;
+	// return new SplitWrapper(tempLeft, tempRight);
+	// }
+	// }
+
+	/**
+	 * This is our second try on split by making a new concatenate method that
+	 * works with nodes.
+	 */
+
+	// public SplitWrapper split(int pos) {
+	// if (pos < this.rank) {
+	// SplitWrapper s = this.left.split(pos);
+	// s.rightTree = concatenateWithNode(s.rightTree, this, this.right);
+	// // s.leftTree = concatenateWithNode(this.left, EditTree.NULL_NODE,
+	// // s.leftTree);
+	// return new SplitWrapper(s.leftTree, s.rightTree);
+	// } else if (pos > this.rank) {
+	// SplitWrapper s = this.right.split(pos - this.rank - 1);
+	// s.leftTree = concatenateWithNode(this.left, this, s.leftTree);
+	// // s.rightTree = concatenateWithNode(s.rightTree,
+	// // EditTree.NULL_NODE, this.right);
+	// return new SplitWrapper(s.leftTree, s.rightTree);
+	// } else {
+	// Node tempLeft = this.left;
+	// Node tempRight = concatenateWithNode(EditTree.NULL_NODE, this,
+	// this.right);
+	// return new SplitWrapper(tempLeft, tempRight);
+	// }
+	// }
+	//
+	// public Node concatenateWithNode(Node left, Node node, Node right) {
+	// int leftHeight = left.height();
+	// int rightHeight = right.height();
+	// Node parent = EditTree.NULL_NODE;
+	// if (leftHeight >= rightHeight) {
+	// Node current = left;
+	// while (leftHeight - rightHeight > 1) {
+	// if (current.balance == Code.LEFT) {
+	// leftHeight -= 2;
+	// } else {
+	// leftHeight--;
+	// }
+	// parent = current;
+	// current = current.right;
+	// if (current==EditTree.NULL_NODE){
+	// current=parent;
+	// break;
+	// }
+	// }
+	// node.left = current;
+	// node.right = right;
+	// node.rank = current.size();
+	// if (leftHeight == rightHeight) {
+	// node.balance = Code.SAME;
+	// } else {
+	// node.balance = Code.LEFT;
+	// }
+	// if (parent != EditTree.NULL_NODE) {
+	// parent.right = node;
+	// } else {
+	// right = node;
+	// }
+	// return right.refreshBalance();
+	// } else {
+	// Node current = right;
+	// while (rightHeight - leftHeight > 1) {
+	// if (current.balance == Code.RIGHT) {
+	// rightHeight -= 2;
+	// } else {
+	// rightHeight--;
+	// }
+	// parent = current;
+	// current = current.left;
+	// if (current==EditTree.NULL_NODE){
+	// current=parent;
+	// break;
+	// }
+	// }
+	// node.right = current;
+	// node.left = left;
+	// node.rank = left.size();
+	// if (leftHeight == rightHeight) {
+	// node.balance = Code.SAME;
+	// } else {
+	// node.balance = Code.RIGHT;
+	// }
+	// if (parent != EditTree.NULL_NODE) {
+	// parent.left = node;
+	// } else {
+	// right = node;
+	// }
+	// left = right;
+	// return left.refreshBalance();
+	// }
+	// }
 
 	/**
 	 * This is an inner class to wrap a node and a boolean together. Used for
@@ -632,19 +727,19 @@ public class Node {
 	}
 
 	class SplitWrapper {
-		private EditTree leftTree;
-		private EditTree rightTree;
+		private Node leftTree;
+		private Node rightTree;
 
-		public SplitWrapper(EditTree leftTree, EditTree rightTree) {
+		public SplitWrapper(Node leftTree, Node rightTree) {
 			this.leftTree = leftTree;
 			this.rightTree = rightTree;
 		}
 
-		public EditTree getRightTree() {
+		public Node getRightTree() {
 			return this.rightTree;
 		}
 
-		public EditTree getLeftTree() {
+		public Node getLeftTree() {
 			return this.leftTree;
 		}
 	}

@@ -486,25 +486,31 @@ public class EditTree {
 		if (pos < 0 || pos > this.size()) {
 			throw new IndexOutOfBoundsException();
 		}
-		//// SplitWrapper output = this.root.split(pos);
-		//// this.root = output.getLeftTree().root;
-		//// return output.getRightTree();
+		// This is related to our first try.
 		//
+		// SplitWrapper output = this.root.split(pos);
+		// this.root = output.getLeftTree().root;
+		// return output.getRightTree();
 
-		String delete = "";
+		// This is related to our second try.
+		//
+		// SplitWrapper output = this.root.split(pos);
+		// this.root = output.getLeftTree();
+		// return new EditTree(output.getRightTree());
 
+		// A not efficient method with O(NlogN).
+		EditTree left = new EditTree();
+		EditTree right = new EditTree();
 		ArrayList<Node> result = this.toInorderListNode(this.root);
-
-		for (int i = pos; i < result.size(); i++) {
-			delete += result.get(i).element;
-
+		for (int i = 0; i < result.size(); i++) {
+			if (i < pos) {
+				left.add(result.get(i).element);
+			} else {
+				right.add(result.get(i).element);
+			}
 		}
-
-		for (int i = pos; i < this.size(); i++) {
-			this.delete(i);
-		}
-
-		return new EditTree(delete);
+		this.root = left.root;
+		return right;
 
 	}
 
